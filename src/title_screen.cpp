@@ -10,7 +10,7 @@ void TitleScreen::setBackground(sf::Texture &texture_background){
 bool TitleScreen::inputKey(){
 	return (sf::Keyboard::isKeyPressed(sf::Keyboard::Space));
 }
-void TitleScreen::afficheBackground(sf::RenderWindow &window, sf::Texture &sprite){
+void TitleScreen::displayBackground(sf::RenderWindow &window, sf::Texture &sprite){
 	window.draw(background);
-	affichage.afficheHighScore(information.getHighScore(), sprite, 160, 55, window);
+	display.displayHighScore(information.getHighScore(), sprite, 160, 55, window);
 }

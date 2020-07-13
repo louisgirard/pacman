@@ -1,61 +1,61 @@
-#include "../include/infos.h"
+#include "information.h"
 
-Infos::Infos():lives{2}, score{0}{
+Information::Information():lives{2}, score{0}{
 	fileScore = "data/score.txt";
 	readHighScore();
 	items.clear();
 }
 //lives
-void Infos::gainLife(){
+void Information::gainLife(){
 	lives++;
 }
-void Infos::loseLife(){
+void Information::loseLife(){
 	if (lives != 0)
 		lives--;
 }
-int Infos::getLife(){
+int Information::getLife(){
 	return lives;
 }
 //score
-void Infos::addScore(int sc){
+void Information::addScore(int sc){
 	score += sc;
 }
-int Infos::getScore(){
+int Information::getScore(){
 	return score;
 }
 //high score
-void Infos::readHighScore(){
+void Information::readHighScore(){
 	//read high score from a file
 	std::ifstream filescore;
 	std::string line;
 	filescore.open(fileScore);
 	if (!filescore) {
-    	perror("ouverture file score");
+    	perror("open file score");
 	}
 	std::getline(filescore, line);
 	filescore.close();
 	highScore = std::stoi(line);
 }
-void Infos::writeHighScore(){
+void Information::writeHighScore(){
 	//read high score from a file
 	std::ofstream filescore;
 	filescore.open(fileScore);
 	if (!filescore) {
-    	perror("ouverture file score");
+    	perror("open file score");
 	}
 	filescore << highScore;
 	filescore.close();
 }
-void Infos::addHighScore(int sc){
+void Information::addHighScore(int sc){
 	highScore += sc;
 }
-int Infos::getHighScore(){
+int Information::getHighScore(){
 	return highScore;
 }
 //items
-std::list<Items> Infos::getItems(){
+std::list<Items> Information::getItems(){
 	return items;
 }
-void Infos::addItem(Items item){
+void Information::addItem(Items item){
 	items.push_front(item);
 }

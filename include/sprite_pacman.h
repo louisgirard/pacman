@@ -1,18 +1,18 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-#define SPEED 2 //vitesse de pacman
+#define SPEED 2 //pacman speed
 
 #define PACMAN_SIZE 13
 #define PACMAN_X 43
 #define PACMAN_Y 3
-#define PACMAN_SPACE 7 //ecart entre les sprites de pacman sur l'image pacman-sprites
+#define PACMAN_SPACE 7 //space between pacman sprites in sprite "pacman-sprites"
 
-#define MORT_X 2 //emplacement de l'animation de mort de pacman
-#define MORT_Y 221
+#define DEATH_X 2 //position of pacman death
+#define DEATH_Y 221
 
-#define MARGE_COLLISION_MAX 2 //marge entre pacman et un mur avant de rentrer en collision
-#define MARGE_COLLISION_MIN 1
+#define MARGIN_COLLISION_MAX 2 //margin between pacman and a wall before collision
+#define MARGIN_COLLISION_MIN 1
 
 enum Direction{Left,Right,Up,Down,Null};
 
@@ -23,17 +23,17 @@ public:
 	void setSprite(sf::Texture &texture, int x, int y);
 
 	void input();
-	void deplacement(int maze[30][27], int x, int y, int width, int height);
+	void move(int maze[30][27], int x, int y, int width, int height);
 	int checkCollisions(int maze[30][27], int x, int y, int width, int height); //0: no collisions, 1: collision, 2: no collision/edge of maze
-	void animationDeplacement(Direction direction);
-	void animationMort(); //renvoie true si l'animation est terminée
+	void animationMove(Direction direction);
+	void animationDeath();
 
 	sf::Sprite sprite;
-	int poseAnimation; //0 : fermé, 1 : bouche peu ouverte, 2 : bouche grande ouverte, 3: bouche peu ouverte
-	int poseAnimationMort;
-	bool finAnimationMort;
+	int cellAnimation; //0: mouth closed, 1: mouth open, 2: mouth wide open, 3: mouth open
+	int cellAnimationDeath;
+	bool endAnimationDeath;
 	bool invincible;
 	bool stop;
 	Direction direction;
-	Direction keyInput; //enregistre la dernière touche appuyée pour tourner pacman en conséquence
+	Direction keyInput; //hold last input key to turn pacman according to it
 };

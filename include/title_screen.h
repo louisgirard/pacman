@@ -1,9 +1,10 @@
+#ifndef TITLE_SCREEN
+#define TITLE_SCREEN
+
 #include<SFML/Graphics.hpp>
 #include <iostream>
-#ifndef AFFICHAGE_INFOS
-#define AFFICHAGE_INFOS
-#include "affichage_infos.h"
-#endif
+#include "display_information.h"
+#include "information.h"
 
 class TitleScreen
 {
@@ -11,9 +12,10 @@ public:
 	TitleScreen(sf::Texture &texture_background);
 	bool inputKey();
 	void setBackground(sf::Texture &texture_background);
-	void afficheBackground(sf::RenderWindow &window, sf::Texture &sprite);
+	void displayBackground(sf::RenderWindow &window, sf::Texture &sprite);
 private:
 	sf::Sprite background;
-	Infos information;
-	Affichage affichage;
+	Information information;
+	Display display;
 };
+#endif

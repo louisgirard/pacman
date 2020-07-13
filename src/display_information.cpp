@@ -1,59 +1,57 @@
-#include "affichage_infos.h"
-#include <iostream>
+#include "display_information.h"
 
-Affichage::Affichage(){}
+Display::Display(){}
 
-//Affichage des scores
+//Display scores
 
-void Affichage::afficheScore(int sc, sf::Texture &texture, int x, int y, sf::RenderWindow &window, bool txt){
+void Display::displayScore(int sc, sf::Texture &texture, int x, int y, sf::RenderWindow &window, bool txt){
 	sf::Sprite number;
-	int compteur;
+	int counter;
 	std::list<int> score;
 	
-	transformeNombre(sc, score);
+	convertNumber(sc, score);
 	
 	number.setTexture(texture);
-	//affiche "score"
+	//display score
 	if (txt){
 	    number.setPosition(sf::Vector2f(x - 20,y - 10));
 	    number.setTextureRect(sf::IntRect(HIGHSCORE_X + 40, HIGHSCORE_Y, HIGHSCORE_WIDTH - 40, HIGHSCORE_HEIGHT));
 	    window.draw(number);
 	}
-    compteur = score.size() - 1;
+    counter = score.size() - 1;
     for(std::list<int>::iterator it = score.begin(); it != score.end(); ++it){
-	    number.setPosition(sf::Vector2f(x - compteur * NUMBER_WIDTH,y));
+	    number.setPosition(sf::Vector2f(x - counter * NUMBER_WIDTH,y));
 	    number.setTextureRect(sf::IntRect(NUMBER_X + *it * NUMBER_WIDTH, NUMBER_Y, NUMBER_WIDTH, NUMBER_HEIGHT));
 	    window.draw(number);
-	    compteur--;
+	    counter--;
     }
 }
 
-void Affichage::afficheHighScore(int sc, sf::Texture &texture, int x, int y, sf::RenderWindow &window, bool txt){
+void Display::displayHighScore(int sc, sf::Texture &texture, int x, int y, sf::RenderWindow &window, bool txt){
 	sf::Sprite number;
-	int compteur;
+	int counter;
 	std::list<int> highScore;
 	
-	transformeNombre(sc, highScore);
+	convertNumber(sc, highScore);
 
 	number.setTexture(texture);
-	//affiche "high score"
+	//display "high score"
 	if (txt){
 	    number.setPosition(sf::Vector2f(x - 60,y - 10));
 	    number.setTextureRect(sf::IntRect(HIGHSCORE_X, HIGHSCORE_Y, HIGHSCORE_WIDTH, HIGHSCORE_HEIGHT));
 	    window.draw(number);
 	}
-    //affiche le high score
-    compteur = highScore.size() - 1;
+    counter = highScore.size() - 1;
     for(std::list<int>::iterator it = highScore.begin(); it != highScore.end(); ++it){
-	    number.setPosition(sf::Vector2f(x - compteur * NUMBER_WIDTH,y));
+	    number.setPosition(sf::Vector2f(x - counter * NUMBER_WIDTH,y));
 	    number.setTextureRect(sf::IntRect(NUMBER_X + *it * NUMBER_WIDTH, NUMBER_Y, NUMBER_WIDTH, NUMBER_HEIGHT));
 	    window.draw(number);
-	    compteur--;
+	    counter--;
     }
 }
 
-void Affichage::transformeNombre(int sc, std::list<int> &nombre){
-	int nb = nombreChiffresScore(sc);
+void Display::convertNumber(int sc, std::list<int> &nombre){
+	int nb = countDigitsScore(sc);
 	nombre.clear();
 	for (int i = (nb-1); i >= 0; i--){
 		nombre.push_front(sc % 10);    
@@ -61,7 +59,7 @@ void Affichage::transformeNombre(int sc, std::list<int> &nombre){
 	}
 }
 
-int Affichage::nombreChiffresScore(int sc){
+int Display::countDigitsScore(int sc){
 	if (sc < 10){
 		return 1;
 	}else if(sc < 100){
@@ -79,11 +77,11 @@ int Affichage::nombreChiffresScore(int sc){
 	}
 }
 
-//Affichage des vies
+//Display lives
 
-void Affichage::afficheVies(int nbVies, sf::Texture &texture, int x, int y, sf::RenderWindow &window){
+void Display::displayLives(int nbLives, sf::Texture &texture, int x, int y, sf::RenderWindow &window){
 	sf::Sprite number;
-	for(int i = 0; i < nbVies; i++){
+	for(int i = 0; i < nbLives; i++){
 	    number.setTexture(texture);
 	    number.setPosition(sf::Vector2f(x + i * LIFE_WIDTH,y));
 	    number.setTextureRect(sf::IntRect(LIFE_X, LIFE_Y, LIFE_WIDTH, LIFE_HEIGHT));
@@ -91,17 +89,17 @@ void Affichage::afficheVies(int nbVies, sf::Texture &texture, int x, int y, sf::
 	}
 }
 
-//Affichage des 8 derniers objets
-void Affichage::afficheItems(std::list<Items> items, sf::Texture &texture, int x, int y, sf::RenderWindow &window){
+//Display last 8 items
+void Display::displayItems(std::list<Items> items, sf::Texture &texture, int x, int y, sf::RenderWindow &window){
 	sf::Sprite number;
-	int compteur;
+	int counter;
 
-    compteur = (items.size() > 8) ? 7 : items.size() - 2;
-    for(std::list<Items>::iterator it = items.begin(); (it != items.end()) && (compteur >= 0); ++it){
+    counter = (items.size() > 8) ? 7 : items.size() - 2;
+    for(std::list<Items>::iterator it = items.begin(); (it != items.end()) && (counter >= 0); ++it){
 	    number.setTexture(texture);
-	    number.setPosition(sf::Vector2f(x - compteur * ITEMS_WIDTH,y));
+	    number.setPosition(sf::Vector2f(x - counter * ITEMS_WIDTH,y));
 	    number.setTextureRect(sf::IntRect(ITEMS_X + ITEMS_WIDTH * *it, ITEMS_Y, ITEMS_WIDTH, ITEMS_HEIGHT));
 	    window.draw(number);
-	    compteur--;
+	    counter--;
     }
 }

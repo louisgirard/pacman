@@ -1,7 +1,7 @@
 #include "sprite_pacman.h"
 
-SpritePacman::SpritePacman():keyInput{Null},invincible{false},stop{false},direction{Left},poseAnimation{0},
-poseAnimationMort{0},finAnimationMort{false}{
+SpritePacman::SpritePacman():keyInput{Null},invincible{false},stop{false},direction{Left},cellAnimation{0},
+cellAnimationDeath{0},endAnimationDeath{false}{
 }
 
 void SpritePacman::setSprite(sf::Texture &texture, int x, int y){
@@ -22,25 +22,24 @@ void SpritePacman::input(){
     }
 }
 
-void SpritePacman::deplacement(int maze[30][27], int x, int y, int width, int height){
-	Direction directionpassive = direction;
+void SpritePacman::move(int maze[30][27], int x, int y, int width, int height){
+	Direction oldDirection = direction;
 	int collision;
 	input();
 	if(!stop){
 		if (keyInput != Null){
-			//si il peut changer de direction alors il le fait
 			direction = keyInput;
 			collision = checkCollisions(maze,x,y,width,height);
-			if (collision == 0){ //si on n'obtient pas de collision en changeant de direction
+			if (collision == 0){ //if no collision when changing direction
 				keyInput = Null;
 			}else{
-				direction = directionpassive;
+				direction = oldDirection;
 			}
 		}
 		collision = checkCollisions(maze,x,y,width,height);
-		//continue tout seul dans la meme direction si pas de collision
+		//follow same direction if no collision
 		if (collision == 0){
-			animationDeplacement(direction);
+			animationMove(direction);
 			if (direction == Up){
 				sprite.move(0, -SPEED);
 			}else if (direction == Down){
@@ -116,8 +115,8 @@ int SpritePacman::checkCollisions(int maze[30][27], int x, int y, int width, int
 			distanceMurFrontal = case1.x * caseSize - xPacman - PACMAN_SIZE;
 		}
 		//si on est en dessous ou egal a la marge de collision avec un mur alors il y a une collision
-		if ((distanceMurFrontal <= MARGE_COLLISION_MAX) && 
-			(distanceMurFrontal >= MARGE_COLLISION_MIN)){
+		if ((distanceMurFrontal <= MARGIN_COLLISION_MAX) && 
+			(distanceMurFrontal >= MARGIN_COLLISION_MIN)){
 			return 1;
 		}else{
 			return 0;
@@ -131,8 +130,8 @@ int SpritePacman::checkCollisions(int maze[30][27], int x, int y, int width, int
 			distanceMurLateral1 = yPacman - case1.y * caseSize;
 			distanceMurLateral2 = case2.y * caseSize + caseSize - yPacman - PACMAN_SIZE;
 		}
-		if((distanceMurLateral1 >= MARGE_COLLISION_MIN) &&
-			(distanceMurLateral2 >= MARGE_COLLISION_MIN)){
+		if((distanceMurLateral1 >= MARGIN_COLLISION_MIN) &&
+			(distanceMurLateral2 >= MARGIN_COLLISION_MIN)){
 			return 0;
 		}else{
 			return 1;
@@ -140,24 +139,24 @@ int SpritePacman::checkCollisions(int maze[30][27], int x, int y, int width, int
 	}
 }
 
-void SpritePacman::animationDeplacement(Direction direction){
-	if (poseAnimation == 0){ //bouche fermée
+void SpritePacman::animationMove(Direction direction){
+	if (cellAnimation == 0){ //closed mouth
 		sprite.setTextureRect(sf::IntRect(PACMAN_X,PACMAN_Y,PACMAN_SIZE,PACMAN_SIZE));
-	}else if((poseAnimation == 1) || (poseAnimation == 3)){
+	}else if((cellAnimation == 1) || (cellAnimation == 3)){
 		sprite.setTextureRect(sf::IntRect(PACMAN_X - 2 * (PACMAN_SIZE + PACMAN_SPACE),PACMAN_Y + direction * (PACMAN_SIZE + PACMAN_SPACE),
 			PACMAN_SIZE,PACMAN_SIZE));
 	}else{
 		sprite.setTextureRect(sf::IntRect(PACMAN_X - (PACMAN_SIZE + PACMAN_SPACE),PACMAN_Y + direction * (PACMAN_SIZE + PACMAN_SPACE),
 			PACMAN_SIZE,PACMAN_SIZE));
 	}
-	poseAnimation = (poseAnimation + 1) % 4;
+	cellAnimation = (cellAnimation + 1) % 4;
 }
 
-void SpritePacman::animationMort(){
-	if(poseAnimationMort == 0){
+void SpritePacman::animationDeath(){
+	if(cellAnimationDeath == 0){
 		sprite.setPosition(sprite.getPosition().x - 1, sprite.getPosition().y);
 	}
-	sprite.setTextureRect(sf::IntRect(MORT_X + 20 * poseAnimationMort,MORT_Y,15,PACMAN_SIZE + 4));
-	poseAnimationMort = (poseAnimationMort + 1) % 12;
-	finAnimationMort = !poseAnimationMort;
+	sprite.setTextureRect(sf::IntRect(DEATH_X + 20 * cellAnimationDeath, DEATH_Y, 15, PACMAN_SIZE + 4));
+	cellAnimationDeath = (cellAnimationDeath + 1) % 12;
+	endAnimationDeath = !cellAnimationDeath;
 }

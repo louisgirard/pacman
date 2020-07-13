@@ -45,13 +45,13 @@ int main(int argc, char const *argv[])
 		/*Title screen*/
 		if (on_title){
 			//dessine le fond d'ecran titre
-			title.afficheBackground(window, sprites);
+			title.displayBackground(window, sprites);
 			if(title.inputKey()){ //si on a appuye sur la touche pour sortir de l'ecran titre
 				on_title = false;
 			}
 		}else{
 			/*On Map*/
-			map.afficheBackground(window, sprites);
+			map.displayBackground(window, sprites);
 			map.run(window, time);
 		}
 

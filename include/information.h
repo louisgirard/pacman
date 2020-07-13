@@ -1,12 +1,15 @@
+#ifndef INFORMATION
+#define INFORMATION
+
 #include <list>
 #include<fstream>
 enum Items {cherry,strawberry,orange,apple,melon,flagship,bell,key};
 
-class Infos
+class Information
 {
 public:
-	Infos();
-	//vies
+	Information();
+	//lives
 	void gainLife();
 	void loseLife();
 	int getLife();
@@ -18,7 +21,7 @@ public:
 	void writeHighScore();
 	void addHighScore(int sc);
 	int getHighScore();
-	//objets
+	//items
 	std::list<Items> getItems();
 	void addItem(Items item);
 
@@ -29,3 +32,4 @@ private:
 	int highScore;
 	std::string fileScore;
 };
+#endif

@@ -51,7 +51,7 @@ void Map::setMaze(){
 
 void Map::run(sf::RenderWindow &window, sf::Clock &time){
 	window.draw(pacman.sprite);
-	if (time.getElapsedTime().asMilliseconds() >= 30){
+	if (time.getElapsedTime().asMilliseconds() >= 35){
 		pacman.move(mazeInfo, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
 		time.restart();
 	}

@@ -49,89 +49,100 @@ void SpritePacman::move(int maze[30][27], int x, int y, int width, int height){
 			}else if (direction == Right){
 				sprite.move(SPEED, 0);
 			}
+		}else if(collision == 2){
+			//end of maze, teleport pacman
+			if (direction == Left){
+				sprite.move(width - PACMAN_SIZE,0);
+			}else{
+				sprite.move(PACMAN_SIZE - width,0);
+			}
 		}
 	}
 }
 
 int SpritePacman::checkCollisions(int maze[30][27], int x, int y, int width, int height){
-	int xPacman, yPacman, caseSize; //en pixels
-	int distanceMurFrontal, distanceMurLateral1, distanceMurLateral2;
-	//les deux / trois cases adjacentes à pacman dans le labyrinthe, en coordonnées x et y
-	sf::Vector2i case1;
-	sf::Vector2i case2;
-	sf::Vector2i case3;
-	bool besoinCase3 = false;
+	int xPacman, yPacman, cellSize; //en pixels
+	int distanceFrontalWall, distanceSideWall1, distanceSideWall2;
+	//two or three cells adjacent to pacman int the maze, x and y location
+	sf::Vector2i cell1;
+	sf::Vector2i cell2;
+	sf::Vector2i cell3;
+	bool needCell3 = false;
 
-	//largeur et hauteur d'une case en pixels
-	caseSize = width / 27;//	caseSize = height / 30;
+	//width and height of cell in pixels
+	cellSize = width / 27;//	cellSize = height / 30;
 
-	//x et y de Pacman dans le referentiel du labyrinthe
+	//location of Pacman in the maze
 	xPacman = sprite.getPosition().x - x;
 	yPacman = sprite.getPosition().y - y;
 
-	if (direction == Up){ //on ne s'intéresse qu'aux 2 cases du haut
-		case1.x = xPacman /caseSize;
-		case1.y = yPacman /caseSize - 1;
-		case2.x = (xPacman + PACMAN_SIZE) /caseSize;
-		case2.y = case1.y;
-	}else if (direction == Down){ //on ne s'intéresse qu'aux 2 cases du bas
-		case1.x = xPacman /caseSize;
-		case1.y = (yPacman + PACMAN_SIZE) /caseSize + 1;
-		case2.x = (xPacman + PACMAN_SIZE) /caseSize;
-		case2.y = case1.y;
+	if (direction == Up){ //focus on up cells
+		cell1.x = xPacman /cellSize;
+		cell1.y = yPacman /cellSize - 1;
+		cell2.x = (xPacman + PACMAN_SIZE) / cellSize;
+		cell2.y = cell1.y;
+	}else if (direction == Down){ //focus on down cells
+		cell1.x = xPacman /cellSize;
+		cell1.y = (yPacman + PACMAN_SIZE) /cellSize + 1;
+		cell2.x = (xPacman + PACMAN_SIZE) /cellSize;
+		cell2.y = cell1.y;
 	}else if (direction == Left){
-		case1.x = xPacman /caseSize - 1;
-		case1.y = yPacman /caseSize;
-		case2.x = case1.x;
-		case2.y = (yPacman + PACMAN_SIZE) /caseSize;
+		cell1.x = xPacman /cellSize - 1;
+		cell1.y = yPacman /cellSize;
+		cell2.x = cell1.x;
+		cell2.y = (yPacman + PACMAN_SIZE) /cellSize;
 	}else if (direction == Right){
-		case1.x = (xPacman + PACMAN_SIZE) /caseSize + 1;
-		case1.y = yPacman /caseSize;
-		case2.x = case1.x;
-		case2.y = (yPacman + PACMAN_SIZE) /caseSize;
+		cell1.x = (xPacman + PACMAN_SIZE) /cellSize + 1;
+		cell1.y = yPacman /cellSize;
+		cell2.x = cell1.x;
+		cell2.y = (yPacman + PACMAN_SIZE) /cellSize;
 	}
 
-	//s'il y a une case entre les deux alors il faut la regarder
-	if ((case2.x - case1.x) == 2){
-		case3.x = case1.x + 1;
-		case3.y = case1.y;
-		besoinCase3 = true;
-	}else if ((case2.y - case1.y) == 2){
-		case3.x = case1.x;
-		case3.y = case1.y + 1;
-		besoinCase3 = true;		
+	//if cell between cell1 and 2 then need to consider it
+	if ((cell2.x - cell1.x) == 2){
+		cell3.x = cell1.x + 1;
+		cell3.y = cell1.y;
+		needCell3 = true;
+	}else if ((cell2.y - cell1.y) == 2){
+		cell3.x = cell1.x;
+		cell3.y = cell1.y + 1;
+		needCell3 = true;		
 	}
 
 	//si on est devant des cases non passables ou au bord du labyrinthe
-	if ((maze[case1.y][case1.x] != 0) || (maze[case2.y][case2.x] != 0) || ((maze[case3.y][case3.x] != 0) && besoinCase3)
-		|| (case1.x < 0) || (case1.y < 0) || (case1.x > 26) || (case1.y > 29)){
+	if ((maze[cell1.y][cell1.x] != 0) || (maze[cell2.y][cell2.x] != 0) || ((maze[cell3.y][cell3.x] != 0) && needCell3)
+		|| (cell1.x < 0) || (cell1.y < 0) || (cell1.x > 26) || (cell1.y > 29)){
 		if (direction == Up){
-			distanceMurFrontal = yPacman - case1.y * caseSize - caseSize;
+			distanceFrontalWall = yPacman - cell1.y * cellSize - cellSize;
 		}else if (direction == Down){
-			distanceMurFrontal = case1.y * caseSize - yPacman - PACMAN_SIZE;
+			distanceFrontalWall = cell1.y * cellSize - yPacman - PACMAN_SIZE;
 		}else if (direction == Left){
-			distanceMurFrontal = xPacman - case1.x * caseSize - caseSize;
+			distanceFrontalWall = xPacman - cell1.x * cellSize - cellSize;
 		}else if (direction == Right){
-			distanceMurFrontal = case1.x * caseSize - xPacman - PACMAN_SIZE;
+			distanceFrontalWall = cell1.x * cellSize - xPacman - PACMAN_SIZE;
 		}
 		//si on est en dessous ou egal a la marge de collision avec un mur alors il y a une collision
-		if ((distanceMurFrontal <= MARGIN_COLLISION_MAX) && 
-			(distanceMurFrontal >= MARGIN_COLLISION_MIN)){
-			return 1;
+		if ((distanceFrontalWall <= MARGIN_COLLISION_MAX) && 
+			(distanceFrontalWall >= MARGIN_COLLISION_MIN)){
+			if (maze[cell1.y][cell1.x] == 4 || maze[cell2.y][cell2.x] == 4){
+				return 2; //end of maze
+			}else{
+				return 1; //collision
+			}
 		}else{
 			return 0;
 		}
 	}else{
 		//si on peut passer il faut qu'on soit au milieu de la case
 		if ((direction == Up) || (direction == Down)){
-			distanceMurLateral1 = xPacman - case1.x * caseSize;
-			distanceMurLateral2 = case2.x * caseSize + caseSize - xPacman - PACMAN_SIZE;
+			distanceSideWall1 = xPacman - cell1.x * cellSize;
+			distanceSideWall2 = cell2.x * cellSize + cellSize - xPacman - PACMAN_SIZE;
 		}else if((direction == Left) || direction == Right){
-			distanceMurLateral1 = yPacman - case1.y * caseSize;
-			distanceMurLateral2 = case2.y * caseSize + caseSize - yPacman - PACMAN_SIZE;
+			distanceSideWall1 = yPacman - cell1.y * cellSize;
+			distanceSideWall2 = cell2.y * cellSize + cellSize - yPacman - PACMAN_SIZE;
 		}
-		if((distanceMurLateral1 >= MARGIN_COLLISION_MIN) &&
-			(distanceMurLateral2 >= MARGIN_COLLISION_MIN)){
+		if((distanceSideWall1 >= MARGIN_COLLISION_MIN) &&
+			(distanceSideWall2 >= MARGIN_COLLISION_MIN)){
 			return 0;
 		}else{
 			return 1;

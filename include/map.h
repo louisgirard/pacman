@@ -2,6 +2,7 @@
 #define MAP
 
 #include <SFML/Graphics.hpp>
+#include <vector>
 #include "display_information.h"
 #include "sprite_pacman.h"
 #include "information.h"
@@ -19,6 +20,17 @@
 #define PACMANSTART_X (MAZE_X + (MAZE_WIDTH - PACMAN_SIZE) / 2)
 #define PACMANSTART_Y 212
 
+#define INVINCIBLE_BALL_X 1
+#define INVINCIBLE_BALL_Y 181
+#define INVINCIBLE_BALL_SIZE 10
+#define INVINCIBLE_BALL_NUMBER 4
+
+#define LITTLE_BALL_X 12
+#define LITTLE_BALL_Y 181
+#define LITTLE_BALL_WIDTH 10
+#define LITTLE_BALL_HEIGHT 9
+#define LITTLE_BALL_NUMBER 185
+
 class Map
 {
 public:
@@ -28,10 +40,12 @@ public:
 
 	void setBackground(sf::Texture &texture_background, sf::RenderWindow &window);
 	void displayBackground(sf::RenderWindow &window, sf::Texture &sprite);
+	void setSprites(sf::Texture &texture_sprites);
 
 	void setMaze();
 
 	void run(sf::RenderWindow &window, sf::Clock &time);
+	
 private:
 	sf::Sprite maze;
 	sf::RectangleShape background; //black bg
@@ -41,6 +55,8 @@ private:
 	int mazeInfo[30][27];
 
 	SpritePacman pacman;
+	std::vector<sf::Sprite> litteBalls;
+	std::vector<sf::Sprite> invincibleBalls;
 
 };
 #endif

@@ -109,7 +109,7 @@ int SpritePacman::checkCollisions(int maze[30][27], int x, int y, int width, int
 		needCell3 = true;		
 	}
 
-	//si on est devant des cases non passables ou au bord du labyrinthe
+	//if in front of not passable cells or edge of maze
 	if ((maze[cell1.y][cell1.x] != 0) || (maze[cell2.y][cell2.x] != 0) || ((maze[cell3.y][cell3.x] != 0) && needCell3)
 		|| (cell1.x < 0) || (cell1.y < 0) || (cell1.x > 26) || (cell1.y > 29)){
 		if (direction == Up){
@@ -133,7 +133,7 @@ int SpritePacman::checkCollisions(int maze[30][27], int x, int y, int width, int
 			return 0;
 		}
 	}else{
-		//si on peut passer il faut qu'on soit au milieu de la case
+		//if it can pass, need to be in the middle of a cell
 		if ((direction == Up) || (direction == Down)){
 			distanceSideWall1 = xPacman - cell1.x * cellSize;
 			distanceSideWall2 = cell2.x * cellSize + cellSize - xPacman - PACMAN_SIZE;

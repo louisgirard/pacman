@@ -4,7 +4,7 @@
 Map::Map(sf::Texture &texture_background, sf::Texture &texture_sprites, sf::RenderWindow &window){
 	setBackground(texture_background, window);
 	setMaze();
-	pacman.setSprite(texture_sprites, PACMANSTART_X, PACMANSTART_Y);
+	setSprites(texture_sprites);
 }
 
 void Map::setBackground(sf::Texture &texture_background, sf::RenderWindow &window){
@@ -16,6 +16,7 @@ void Map::setBackground(sf::Texture &texture_background, sf::RenderWindow &windo
     maze.setPosition(MAP_X,MAP_Y);
     maze.setTextureRect(sf::IntRect(0,0,MAP_WIDTH,MAP_HEIGHT));
 }
+
 void Map::displayBackground(sf::RenderWindow &window, sf::Texture &sprite){
 	//black bg
 	window.draw(background);
@@ -27,6 +28,29 @@ void Map::displayBackground(sf::RenderWindow &window, sf::Texture &sprite){
 	//display lives/items
 	display.displayLives(information.getLife(), sprite, MAP_X + 10, MAP_Y + MAP_HEIGHT + 1, window);
 	display.displayItems(information.getItems(), sprite, MAP_X + 200, MAP_Y + MAP_HEIGHT + 1, window);
+	//display pacman
+	window.draw(pacman.sprite);
+	//display balls
+	for(int i = 0; i < INVINCIBLE_BALL_NUMBER; i++){
+		window.draw(invincibleBalls.at(i));
+	}
+}
+
+void Map::setSprites(sf::Texture &texture_sprites){
+	pacman.setSprite(texture_sprites, PACMANSTART_X, PACMANSTART_Y);
+	sf::Sprite sprite;
+	int x,y,cellSize,offset;
+	
+	cellSize = MAZE_WIDTH / 27;
+	offset = 2;
+	for(int i = 0; i < INVINCIBLE_BALL_NUMBER; i++){
+		x = (i % 2) * (cellSize * 25 + 2) + MAZE_X + offset;
+		y = i / 2 * (cellSize * 20) + MAZE_Y + offset + cellSize * 2;
+		sprite.setTexture(texture_sprites);
+		sprite.setPosition(x,y);
+		sprite.setTextureRect(sf::IntRect(INVINCIBLE_BALL_X,INVINCIBLE_BALL_Y,INVINCIBLE_BALL_SIZE,INVINCIBLE_BALL_SIZE));
+		invincibleBalls.push_back(sprite);
+	}
 }
 
 void Map::setMaze(){
@@ -50,7 +74,6 @@ void Map::setMaze(){
 }
 
 void Map::run(sf::RenderWindow &window, sf::Clock &time){
-	window.draw(pacman.sprite);
 	if (time.getElapsedTime().asMilliseconds() >= 35){
 		pacman.move(mazeInfo, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
 		time.restart();

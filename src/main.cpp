@@ -50,9 +50,16 @@ int main(int argc, char const *argv[])
 				on_title = false;
 			}
 		}else{
-			/*On Map*/
 			map.displayBackground(window, sprites);
-			map.run(window, time);
+			/*On Map*/
+			if(!map.started){
+				if (time.getElapsedTime().asMilliseconds() >= 2000){
+					map.start();
+					time.restart();
+				}
+			}else{
+				map.run(window, time);
+			}
 		}
 
 		window.display();

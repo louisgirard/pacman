@@ -18,19 +18,24 @@
 #define MAZE_WIDTH (MAP_WIDTH - 8)
 #define MAZE_HEIGHT (MAP_HEIGHT - 8)
 
-#define PACMANSTART_X (MAZE_X + (MAZE_WIDTH - PACMAN_SIZE) / 2)
-#define PACMANSTART_Y 212
+#define PACMAN_MAZE_X (MAZE_X + (MAZE_WIDTH - PACMAN_SIZE) / 2)
+#define PACMAN_MAZE_Y 212
 
 #define INVINCIBLE_BALL_X 1
 #define INVINCIBLE_BALL_Y 181
 #define INVINCIBLE_BALL_SIZE 10
 #define INVINCIBLE_BALL_NUMBER 4
 
-#define LITTLE_BALL_X 12
-#define LITTLE_BALL_Y 181
-#define LITTLE_BALL_WIDTH 10
-#define LITTLE_BALL_HEIGHT 9
-#define LITTLE_BALL_NUMBER 185
+#define LITTLE_BALL_X 16
+#define LITTLE_BALL_Y 184
+#define LITTLE_BALL_SIZE 2
+
+#define READY_X 62
+#define READY_Y 15
+#define READY_WIDTH 56
+#define READY_HEIGHT 9
+#define READY_MAZE_X (MAZE_X + (MAZE_WIDTH - READY_WIDTH) / 2)
+#define READY_MAZE_Y 167
 
 class Map
 {
@@ -39,13 +44,10 @@ public:
 
 	Map(sf::Texture &texture_background, sf::Texture &texture_sprites, sf::RenderWindow &window);
 
-	void setBackground(sf::Texture &texture_background, sf::RenderWindow &window);
 	void displayBackground(sf::RenderWindow &window, sf::Texture &sprite);
-	void setSprites(sf::Texture &texture_sprites);
-
-	void setMaze();
-
 	void run(sf::RenderWindow &window, sf::Clock &time);
+	void start();
+	bool started = false;
 	
 private:
 	sf::Sprite maze;
@@ -56,8 +58,14 @@ private:
 	int mazeInfo[30][27];
 
 	SpritePacman pacman;
+	sf::Sprite ready;
 	std::vector<sf::Sprite> litteBalls;
 	std::vector<sf::Sprite> invincibleBalls;
+
+	void setBackground(sf::Texture &texture_background, sf::RenderWindow &window);
+	void setSprites(sf::Texture &texture_sprites);
+	void setSprite(sf::Sprite &sprite, sf::Texture &texture_sprites, int x, int y, int sprite_x, int sprite_y, int width, int height);
+	void setMaze();
 
 };
 #endif

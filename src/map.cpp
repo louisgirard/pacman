@@ -1,5 +1,4 @@
 #include "map.h"
-#include <iostream>
 
 Map::Map(sf::Texture &texture_background, sf::Texture &texture_sprites, sf::RenderWindow &window){
 	setBackground(texture_background, window);
@@ -11,7 +10,6 @@ void Map::setBackground(sf::Texture &texture_background, sf::RenderWindow &windo
 	background.setSize(sf::Vector2f(window.getSize().x,window.getSize().y));
     background.setPosition(0, 0);
     background.setFillColor(sf::Color::Black);
-
     maze.setTexture(texture_background);
     maze.setPosition(MAP_X,MAP_Y);
     maze.setTextureRect(sf::IntRect(0,0,MAP_WIDTH,MAP_HEIGHT));
@@ -31,8 +29,11 @@ void Map::displayBackground(sf::RenderWindow &window, sf::Texture &sprite){
 	//display pacman
 	window.draw(pacman.sprite);
 	//display balls
-	for(int i = 0; i < INVINCIBLE_BALL_NUMBER; i++){
+	for(size_t i = 0; i < invincibleBalls.size(); i++){
 		window.draw(invincibleBalls.at(i));
+	}
+	for(size_t i = 0; i < litteBalls.size(); i++){
+		window.draw(litteBalls.at(i));
 	}
 }
 
@@ -43,6 +44,7 @@ void Map::setSprites(sf::Texture &texture_sprites){
 	
 	cellSize = MAZE_WIDTH / 27;
 	offset = 2;
+	//invincibleBalls
 	for(int i = 0; i < INVINCIBLE_BALL_NUMBER; i++){
 		x = (i % 2) * (cellSize * 25 + 2) + MAZE_X + offset;
 		y = i / 2 * (cellSize * 20) + MAZE_Y + offset + cellSize * 2;
@@ -50,6 +52,20 @@ void Map::setSprites(sf::Texture &texture_sprites){
 		sprite.setPosition(x,y);
 		sprite.setTextureRect(sf::IntRect(INVINCIBLE_BALL_X,INVINCIBLE_BALL_Y,INVINCIBLE_BALL_SIZE,INVINCIBLE_BALL_SIZE));
 		invincibleBalls.push_back(sprite);
+	}
+
+	//littleBalls
+	for(int i = 0; i < 30; i++){
+		for(int j = 0; j < 27; j++){
+			if(mazeInfo[i][j] == 0){
+				x = j * cellSize + MAZE_X + offset;
+				y = i * cellSize + MAZE_Y + offset;
+				sprite.setTexture(texture_sprites);
+				sprite.setPosition(x,y);
+				sprite.setTextureRect(sf::IntRect(LITTLE_BALL_X,LITTLE_BALL_Y,LITTLE_BALL_WIDTH,LITTLE_BALL_HEIGHT));
+				litteBalls.push_back(sprite);
+			}
+		}
 	}
 }
 
@@ -74,9 +90,24 @@ void Map::setMaze(){
 }
 
 void Map::run(sf::RenderWindow &window, sf::Clock &time){
+	//pacman move
 	if (time.getElapsedTime().asMilliseconds() >= 35){
 		pacman.move(mazeInfo, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
 		time.restart();
+	}
+	//invincibleBalls
+	for(size_t i = 0; i < invincibleBalls.size(); i++){
+		if(pacman.sprite.getGlobalBounds().intersects(invincibleBalls.at(i).getGlobalBounds())){
+			information.addScore(50);
+			invincibleBalls.erase(invincibleBalls.begin() + i);
+		}
+	}
+	//littleBalls
+	for(size_t i = 0; i < litteBalls.size(); i++){
+		if(pacman.sprite.getGlobalBounds().intersects(litteBalls.at(i).getGlobalBounds())){
+			information.addScore(10);
+			litteBalls.erase(litteBalls.begin() + i);
+		}
 	}
 	
 	/*

@@ -2,7 +2,7 @@ CXX=g++
 CXXFLAGS=-lsfml-graphics -lsfml-system -lsfml-window -std=c++11 -Iinclude
 EXEC=main
 BUILD_DIR = $(addprefix build/,$(MODULES)) build
-OBJ = build/sprite_pacman.o build/map.o build/display_information.o build/information.o build/title_screen.o build/main.o
+OBJ = build/pacman.o build/map.o build/display_information.o build/information.o build/title_screen.o build/main.o
 
 all: checkdirs $(EXEC)
 

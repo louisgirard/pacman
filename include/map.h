@@ -3,8 +3,9 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <iostream>
 #include "display_information.h"
-#include "sprite_pacman.h"
+#include "pacman.h"
 #include "information.h"
 
 #define MAP_X 40

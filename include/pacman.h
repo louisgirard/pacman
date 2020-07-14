@@ -24,7 +24,7 @@ public:
 
 	void input();
 	void move(int maze[30][27], int x, int y, int width, int height);
-	int checkCollisions(int maze[30][27], int x, int y, int width, int height); //0: no collisions, 1: collision, 2: no collision/edge of maze
+	int checkMazeCollisions(int maze[30][27], int x, int y, int width, int height); //0: no collisions, 1: collision, 2: no collision/edge of maze
 	void animationMove(Direction direction);
 	void animationDeath();
 

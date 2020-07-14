@@ -1,4 +1,4 @@
-#include "sprite_pacman.h"
+#include "pacman.h"
 
 SpritePacman::SpritePacman():keyInput{Null},invincible{false},stop{false},direction{Left},cellAnimation{0},
 cellAnimationDeath{0},endAnimationDeath{false}{
@@ -29,14 +29,14 @@ void SpritePacman::move(int maze[30][27], int x, int y, int width, int height){
 	if(!stop){
 		if (keyInput != Null){
 			direction = keyInput;
-			collision = checkCollisions(maze,x,y,width,height);
+			collision = checkMazeCollisions(maze,x,y,width,height);
 			if (collision == 0){ //if no collision when changing direction
 				keyInput = Null;
 			}else{
 				direction = oldDirection;
 			}
 		}
-		collision = checkCollisions(maze,x,y,width,height);
+		collision = checkMazeCollisions(maze,x,y,width,height);
 		//follow same direction if no collision
 		if (collision == 0){
 			animationMove(direction);
@@ -60,7 +60,7 @@ void SpritePacman::move(int maze[30][27], int x, int y, int width, int height){
 	}
 }
 
-int SpritePacman::checkCollisions(int maze[30][27], int x, int y, int width, int height){
+int SpritePacman::checkMazeCollisions(int maze[30][27], int x, int y, int width, int height){
 	int xPacman, yPacman, cellSize; //en pixels
 	int distanceFrontalWall, distanceSideWall1, distanceSideWall2;
 	//two or three cells adjacent to pacman int the maze, x and y location

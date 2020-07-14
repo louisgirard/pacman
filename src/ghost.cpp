@@ -45,7 +45,7 @@ void Ghost::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int m
 
 void Ghost::animationMove(Direction direction){
 	if (cellAnimation == 0){
-		sprite.setTextureRect(sf::IntRect(GHOST_X + id * 5 * GHOST_SIZE,GHOST_Y,GHOST_SIZE,GHOST_SPACE));
+		sprite.setTextureRect(sf::IntRect(GHOST_X + id * 5 * GHOST_SIZE,GHOST_Y + direction * (GHOST_SIZE + GHOST_SPACE),GHOST_SIZE,GHOST_SIZE));
 	}else{
 		sprite.setTextureRect(sf::IntRect(GHOST_X + id * 5 * GHOST_SIZE + GHOST_SIZE + GHOST_SPACE,GHOST_Y + direction * (GHOST_SIZE + GHOST_SPACE),
 			GHOST_SIZE,GHOST_SIZE));

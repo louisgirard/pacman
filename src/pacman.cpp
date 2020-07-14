@@ -1,9 +1,9 @@
 #include "pacman.h"
 
-SpritePacman::SpritePacman():Character(PACMAN_X,PACMAN_Y,PACMAN_SIZE,PACMAN_SPACE),keyInput{Null},invincible{false},cellAnimationDeath{0},endAnimationDeath{false}{
+Pacman::Pacman():Character(PACMAN_X,PACMAN_Y,PACMAN_SIZE,PACMAN_SPACE),keyInput{Null},invincible{false},cellAnimationDeath{0},endAnimationDeath{false}{
 }
 
-void SpritePacman::input(){
+void Pacman::input(){
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
         keyInput = Up;
     }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
@@ -15,21 +15,21 @@ void SpritePacman::input(){
     }
 }
 
-void SpritePacman::move(int maze[30][27], int x, int y, int width, int height){
+void Pacman::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int maze_height){
 	Direction oldDirection = direction;
 	int collision;
 	input();
 	if(!stop){
 		if (keyInput != Null){
 			direction = keyInput;
-			collision = checkMazeCollisions(maze,x,y,width,height);
+			collision = checkMazeCollisions(maze,maze_x,maze_y,maze_width,maze_height);
 			if (collision == 0){ //if no collision when changing direction
 				keyInput = Null;
 			}else{
 				direction = oldDirection;
 			}
 		}
-		collision = checkMazeCollisions(maze,x,y,width,height);
+		collision = checkMazeCollisions(maze,maze_x,maze_y,maze_width,maze_height);
 		//follow same direction if no collision
 		if (collision == 0){
 			animationMove(direction);
@@ -45,15 +45,15 @@ void SpritePacman::move(int maze[30][27], int x, int y, int width, int height){
 		}else if(collision == 2){
 			//end of maze, teleport pacman
 			if (direction == Left){
-				sprite.move(width - PACMAN_SIZE,0);
+				sprite.move(maze_width - PACMAN_SIZE,0);
 			}else{
-				sprite.move(PACMAN_SIZE - width,0);
+				sprite.move(PACMAN_SIZE - maze_width,0);
 			}
 		}
 	}
 }
 
-void SpritePacman::animationMove(Direction direction){
+void Pacman::animationMove(Direction direction){
 	if (cellAnimation == 0){ //closed mouth
 		sprite.setTextureRect(sf::IntRect(PACMAN_X,PACMAN_Y,PACMAN_SIZE,PACMAN_SIZE));
 	}else if((cellAnimation == 1) || (cellAnimation == 3)){
@@ -66,7 +66,7 @@ void SpritePacman::animationMove(Direction direction){
 	cellAnimation = (cellAnimation + 1) % 4;
 }
 
-void SpritePacman::animationDeath(){
+void Pacman::animationDeath(){
 	if(cellAnimationDeath == 0){
 		sprite.setPosition(sprite.getPosition().x - 1, sprite.getPosition().y);
 	}

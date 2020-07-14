@@ -6,6 +6,7 @@
 #include <iostream>
 #include "display_information.h"
 #include "pacman.h"
+#include "ghost.h"
 #include "information.h"
 
 #define MAP_X 40
@@ -37,6 +38,8 @@
 #define READY_MAZE_X (MAZE_X + (MAZE_WIDTH - READY_WIDTH) / 2)
 #define READY_MAZE_Y 167
 
+#define GHOST_NUMBER 1
+
 class Map
 {
 public:
@@ -56,7 +59,8 @@ private:
 	//0: passable, 1: not passable, 2: ghost cage, 3: ghost cage exit, 4: maze exit
 	int mazeInfo[30][27];
 
-	SpritePacman pacman;
+	Pacman pacman;
+	std::vector<Ghost> ghosts;
 	sf::Sprite ready;
 	std::vector<sf::Sprite> litteBalls;
 	std::vector<sf::Sprite> invincibleBalls;

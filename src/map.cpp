@@ -21,8 +21,6 @@ void Map::displayBackground(sf::RenderWindow &window, sf::Texture &sprite){
 	//display lives/items
 	display.displayLives(information.getLife(), sprite, MAP_X + 10, MAP_Y + MAP_HEIGHT + 1, window);
 	display.displayItems(information.getItems(), sprite, MAP_X + 200, MAP_Y + MAP_HEIGHT + 1, window);
-	//display pacman
-	window.draw(pacman.sprite);
 	//display ready
 	if(!started){
 		window.draw(ready);
@@ -34,11 +32,23 @@ void Map::displayBackground(sf::RenderWindow &window, sf::Texture &sprite){
 	for(size_t i = 0; i < litteBalls.size(); i++){
 		window.draw(litteBalls.at(i));
 	}
+	//display characters
+	window.draw(pacman.sprite);
+	for(int i = 0; i < ghosts.size(); i++){
+		window.draw(ghosts.at(i).sprite);
+	}
 }
 
 void Map::setSprites(sf::Texture &texture_sprites){
 	pacman.setSprite(texture_sprites, PACMAN_MAZE_X, PACMAN_MAZE_Y);
 	setSprite(ready, texture_sprites, READY_MAZE_X, READY_MAZE_Y, READY_X, READY_Y, READY_WIDTH, READY_HEIGHT);
+
+	//ghosts
+	for(int i = 0; i < GHOST_NUMBER; i++){
+		Ghost ghost(i);
+		ghost.setSprite(texture_sprites, MAZE_X + 1, MAZE_Y + 1);
+		ghosts.push_back(ghost);
+	}
 
 	sf::Sprite sprite;
 	int x,y,cellSize,offset;
@@ -114,9 +124,12 @@ void Map::setMaze(){
 }
 
 void Map::run(sf::RenderWindow &window, sf::Clock &time){
-	//pacman move
+	//characters move
 	if (time.getElapsedTime().asMilliseconds() >= 35){
 		pacman.move(mazeInfo, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
+		for(int i = 0; i < ghosts.size(); i++){
+			ghosts.at(i).move(mazeInfo, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
+		}
 		time.restart();
 	}
 	//invincibleBalls
@@ -147,4 +160,7 @@ void Map::run(sf::RenderWindow &window, sf::Clock &time){
 void Map::start(){
 	started = true;
 	pacman.stop = false;
+	for(int i = 0; i < ghosts.size(); i++){
+		ghosts.at(i).stop = false;
+	}
 }

@@ -5,7 +5,7 @@
 
 void load_texture(sf::Texture &texture, std::string texture_name);
 
-int main(int argc, char const *argv[])
+int main()
 {
 	/*Textures*/
 	//Pour la performance il vaut mieux avoir le moins de textures possibles
@@ -70,6 +70,6 @@ int main(int argc, char const *argv[])
 
 void load_texture(sf::Texture &texture, std::string texture_name){
 	if(!texture.loadFromFile(texture_name)){
-        perror("erreur chargement texture numbers");
+        perror("load textures");
     }
 }

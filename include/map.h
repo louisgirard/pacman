@@ -51,7 +51,6 @@ public:
 	
 private:
 	sf::Sprite maze;
-	sf::RectangleShape background; //black bg
 	Display display;
 	//hold passable/not passable cells
 	//0: passable, 1: not passable, 2: ghost cage, 3: ghost cage exit, 4: maze exit

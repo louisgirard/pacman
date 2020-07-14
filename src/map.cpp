@@ -7,17 +7,12 @@ Map::Map(sf::Texture &texture_background, sf::Texture &texture_sprites, sf::Rend
 }
 
 void Map::setBackground(sf::Texture &texture_background, sf::RenderWindow &window){
-	background.setSize(sf::Vector2f(window.getSize().x,window.getSize().y));
-    background.setPosition(0, 0);
-    background.setFillColor(sf::Color::Black);
     maze.setTexture(texture_background);
     maze.setPosition(MAP_X,MAP_Y);
     maze.setTextureRect(sf::IntRect(0,0,MAP_WIDTH,MAP_HEIGHT));
 }
 
 void Map::displayBackground(sf::RenderWindow &window, sf::Texture &sprite){
-	//black bg
-	window.draw(background);
 	//display maze
 	window.draw(maze);
 	//display scores

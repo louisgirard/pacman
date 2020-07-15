@@ -1,7 +1,7 @@
 #include "ghost.h"
 
 Ghost::Ghost(int ghost_id):Character(GHOST_X + ghost_id * 5 * GHOST_SIZE,GHOST_Y,GHOST_SIZE,GHOST_SPACE){
-	invincible = true;
+	state = 0;
 	id = ghost_id;
 	direction = Down;
 	if(id == 0){
@@ -45,11 +45,51 @@ void Ghost::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int m
 }
 
 void Ghost::animationMove(Direction direction){
-	if (cellAnimation == 0){
-		sprite.setTextureRect(sf::IntRect(GHOST_X + id * 5 * GHOST_SIZE,GHOST_Y + direction * (GHOST_SIZE + GHOST_SPACE),GHOST_SIZE,GHOST_SIZE));
-	}else{
-		sprite.setTextureRect(sf::IntRect(GHOST_X + id * 5 * GHOST_SIZE + GHOST_SIZE + GHOST_SPACE,GHOST_Y + direction * (GHOST_SIZE + GHOST_SPACE),
-			GHOST_SIZE,GHOST_SIZE));
+	//normal pose
+	if(normal()){
+		sprite.setTextureRect(sf::IntRect(GHOST_X + id * 5 * GHOST_SIZE + cellAnimation * (GHOST_SIZE + GHOST_SPACE),GHOST_Y + direction * (GHOST_SIZE + GHOST_SPACE),GHOST_SIZE,GHOST_SIZE));
+		cellAnimation = (cellAnimation + 1) % 2;
+	}else if(weak()){
+		sprite.setTextureRect(sf::IntRect(GHOST_WEAK_X + (GHOST_SIZE + GHOST_SPACE) * cellAnimation, GHOST_WEAK_Y,GHOST_SIZE,GHOST_SIZE));
+		cellAnimation = (cellAnimation + 1) % 2;
+	}else if(endWeak()){
+		if(cellAnimation > 1){
+			sprite.setTextureRect(sf::IntRect(GHOST_WEAK_X + (GHOST_SIZE + GHOST_SPACE) * cellAnimation % 2, GHOST_WEAK_Y,GHOST_SIZE,GHOST_SIZE));
+		}else{
+			sprite.setTextureRect(sf::IntRect(GHOST_END_WEAK_X + (GHOST_SIZE + GHOST_SPACE) * cellAnimation, GHOST_WEAK_Y,GHOST_SIZE,GHOST_SIZE));
+		}
+		cellAnimation = (cellAnimation + 1) % 4;
 	}
-	cellAnimation = (cellAnimation + 1) % 2;
+}
+
+void Ghost::setNormal(){
+	state = 0;
+}
+
+void Ghost::setWeak(){
+	state = 1;
+}
+
+void Ghost::setEndWeak(){
+	state = 2;
+}
+
+void Ghost::setDead(){
+	state = 3;
+}
+
+bool Ghost::normal(){
+	return state == 0;
+}
+
+bool Ghost::weak(){
+	return state == 1;
+}
+
+bool Ghost::endWeak(){
+	return state == 2;
+}
+
+bool Ghost::dead(){
+	return state == 3;
 }

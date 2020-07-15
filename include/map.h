@@ -45,17 +45,20 @@ class Map
 public:
 	Information information;
 
-	Map(sf::Texture &texture_background, sf::Texture &texture_sprites, sf::RenderWindow &window);
+	Map(sf::Texture &texture_background, sf::Texture &texture_sprites, sf::RenderWindow &main_window);
 
-	void displayBackground(sf::RenderWindow &window, sf::Texture &sprite);
-	void run(sf::RenderWindow &window, sf::Clock &time);
+	void displayBackground();
+	void run();
 	void start();
-	void reset();
 	bool started = false;
 	
 private:
+	sf::RenderWindow &window;
 	sf::Texture &texture;
+	sf::Clock time;
+	sf::Clock invincibleTimer;
 
+	bool ghostsWeak;
 	sf::Sprite maze;
 	Display display;
 	//hold passable/not passable cells
@@ -68,12 +71,13 @@ private:
 	std::vector<sf::Sprite> litteBalls;
 	std::vector<sf::Sprite> invincibleBalls;
 
-	void setBackground(sf::Texture &texture_background, sf::RenderWindow &window);
+	void setBackground(sf::Texture &texture_background);
 	void setSprite(sf::Sprite &sprite, int x, int y, int sprite_x, int sprite_y, int width, int height);
 	void setSprites();
 	void setMaze();
 	void setInvincibleBalls();
 	void setLittleBalls();
+	void reset();
 
 };
 #endif

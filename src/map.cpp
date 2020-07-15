@@ -1,26 +1,26 @@
 #include "map.h"
 
-Map::Map(sf::Texture &texture_background, sf::Texture &texture_sprites, sf::RenderWindow &window):texture{texture_sprites}{
-	setBackground(texture_background, window);
+Map::Map(sf::Texture &texture_background, sf::Texture &texture_sprites, sf::RenderWindow &main_window):window{main_window},texture{texture_sprites}{
+	setBackground(texture_background);
 	setMaze();
 	setSprites();
 }
 
-void Map::setBackground(sf::Texture &texture_background, sf::RenderWindow &window){
+void Map::setBackground(sf::Texture &texture_background){
     maze.setTexture(texture_background);
     maze.setPosition(MAP_X,MAP_Y);
     maze.setTextureRect(sf::IntRect(0,0,MAP_WIDTH,MAP_HEIGHT));
 }
 
-void Map::displayBackground(sf::RenderWindow &window, sf::Texture &sprite){
+void Map::displayBackground(){
 	//display maze
 	window.draw(maze);
 	//display scores
-	display.displayScore(information.getScore(), sprite, MAP_X + 50, MAP_Y - 14, window);
-	display.displayHighScore(information.getHighScore(), sprite, MAP_X + 150, MAP_Y - 14, window, true);
+	display.displayScore(information.getScore(), texture, MAP_X + 50, MAP_Y - 14, window);
+	display.displayHighScore(information.getHighScore(), texture, MAP_X + 150, MAP_Y - 14, window, true);
 	//display lives/items
-	display.displayLives(information.getLife(), sprite, MAP_X + 10, MAP_Y + MAP_HEIGHT + 1, window);
-	display.displayItems(information.getItems(), sprite, MAP_X + 200, MAP_Y + MAP_HEIGHT + 1, window);
+	display.displayLives(information.getLife(), texture, MAP_X + 10, MAP_Y + MAP_HEIGHT + 1, window);
+	display.displayItems(information.getItems(), texture, MAP_X + 200, MAP_Y + MAP_HEIGHT + 1, window);
 	//display ready
 	if(!started){
 		window.draw(ready);
@@ -130,7 +130,7 @@ void Map::setMaze(){
 	mazefile.close();
 }
 
-void Map::run(sf::RenderWindow &window, sf::Clock &time){
+void Map::run(){
 	//death
 	if(pacman.dying){
 		pacman.sprite.setPosition(PACMAN_MAZE_X, PACMAN_MAZE_Y);
@@ -148,9 +148,27 @@ void Map::run(sf::RenderWindow &window, sf::Clock &time){
 		}
 		time.restart();
 	}
+	//invincible
+	if(ghostsWeak){
+		if (invincibleTimer.getElapsedTime().asMilliseconds() >= 10000){
+			ghostsWeak = false;
+			for(size_t i = 0; i < ghosts.size(); i++){
+				ghosts.at(i).setNormal();
+			}	
+		}else if(invincibleTimer.getElapsedTime().asMilliseconds() >= 7000){
+			for(size_t i = 0; i < ghosts.size(); i++){
+				ghosts.at(i).setEndWeak();
+			}
+		}
+	}
 	//invincibleBalls
 	for(size_t i = 0; i < invincibleBalls.size(); i++){
 		if(pacman.sprite.getGlobalBounds().intersects(invincibleBalls.at(i).getGlobalBounds())){
+			ghostsWeak = true;
+			for(size_t i = 0; i < ghosts.size(); i++){
+				ghosts.at(i).setWeak();
+			}
+			invincibleTimer.restart();
 			information.addScore(50);
 			invincibleBalls.erase(invincibleBalls.begin() + i);
 		}
@@ -165,8 +183,13 @@ void Map::run(sf::RenderWindow &window, sf::Clock &time){
 	//ghosts
 	for(size_t i = 0; i < ghosts.size(); i++){
 		if(pacman.sprite.getGlobalBounds().intersects(ghosts.at(i).sprite.getGlobalBounds())){
-			if(pacman.invincible && !ghosts.at(i).invincible){
-				//kill ghost
+			if(ghostsWeak){
+				//ghost invincible = already killed
+				if(ghosts.at(i).weak() || ghosts.at(i).endWeak()){
+					//kill ghost
+					information.addScore(100);
+					ghosts.at(i).setDead();				
+				}
 			}else{
 				pacman.dying = true;
 				//lose life

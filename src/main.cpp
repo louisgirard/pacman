@@ -50,7 +50,7 @@ int main()
 				on_title = false;
 			}
 		}else{
-			map.displayBackground(window, sprites);
+			map.displayBackground();
 			/*On Map*/
 			if(!map.started){
 				if (time.getElapsedTime().asMilliseconds() >= 2000){
@@ -58,7 +58,7 @@ int main()
 					time.restart();
 				}
 			}else{
-				map.run(window, time);
+				map.run();
 			}
 		}
 

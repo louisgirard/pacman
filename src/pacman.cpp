@@ -1,7 +1,6 @@
 #include "pacman.h"
 
 Pacman::Pacman():Character(PACMAN_X,PACMAN_Y,PACMAN_SIZE,PACMAN_SPACE),keyInput{Null},cellAnimationDeath{0},dying{false}{
-	invincible = false;
 }
 
 void Pacman::input(){

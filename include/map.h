@@ -50,9 +50,12 @@ public:
 	void displayBackground(sf::RenderWindow &window, sf::Texture &sprite);
 	void run(sf::RenderWindow &window, sf::Clock &time);
 	void start();
+	void reset();
 	bool started = false;
 	
 private:
+	sf::Texture &texture;
+
 	sf::Sprite maze;
 	Display display;
 	//hold passable/not passable cells
@@ -66,9 +69,11 @@ private:
 	std::vector<sf::Sprite> invincibleBalls;
 
 	void setBackground(sf::Texture &texture_background, sf::RenderWindow &window);
-	void setSprites(sf::Texture &texture_sprites);
-	void setSprite(sf::Sprite &sprite, sf::Texture &texture_sprites, int x, int y, int sprite_x, int sprite_y, int width, int height);
+	void setSprite(sf::Sprite &sprite, int x, int y, int sprite_x, int sprite_y, int width, int height);
+	void setSprites();
 	void setMaze();
+	void setInvincibleBalls();
+	void setLittleBalls();
 
 };
 #endif

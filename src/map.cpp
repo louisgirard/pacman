@@ -1,9 +1,9 @@
 #include "map.h"
 
-Map::Map(sf::Texture &texture_background, sf::Texture &texture_sprites, sf::RenderWindow &window){
+Map::Map(sf::Texture &texture_background, sf::Texture &texture_sprites, sf::RenderWindow &window):texture{texture_sprites}{
 	setBackground(texture_background, window);
 	setMaze();
-	setSprites(texture_sprites);
+	setSprites();
 }
 
 void Map::setBackground(sf::Texture &texture_background, sf::RenderWindow &window){
@@ -39,33 +39,47 @@ void Map::displayBackground(sf::RenderWindow &window, sf::Texture &sprite){
 	}
 }
 
-void Map::setSprites(sf::Texture &texture_sprites){
-	pacman.setSprite(texture_sprites, PACMAN_MAZE_X, PACMAN_MAZE_Y);
-	setSprite(ready, texture_sprites, READY_MAZE_X, READY_MAZE_Y, READY_X, READY_Y, READY_WIDTH, READY_HEIGHT);
+void Map::setSprite(sf::Sprite &sprite, int x, int y, int sprite_x, int sprite_y, int width, int height){
+	sprite.setTexture(texture);
+	sprite.setPosition(x,y);
+	sprite.setTextureRect(sf::IntRect(sprite_x,sprite_y,width,height));
+
+}
+
+void Map::setSprites(){
+	pacman.setSprite(texture, PACMAN_MAZE_X, PACMAN_MAZE_Y);
+	setSprite(ready, READY_MAZE_X, READY_MAZE_Y, READY_X, READY_Y, READY_WIDTH, READY_HEIGHT);
 
 	//ghosts
 	for(int i = 0; i < GHOST_NUMBER; i++){
 		Ghost ghost(i);
-		ghost.setSprite(texture_sprites, MAZE_X + 1, MAZE_Y + 1);
+		ghost.setSprite(texture, MAZE_X + 1, MAZE_Y + 1);
 		ghosts.push_back(ghost);
 	}
 
+	setInvincibleBalls();
+	setLittleBalls();
+}
+
+void Map::setInvincibleBalls(){
 	sf::Sprite sprite;
-	int x,y,cellSize,offset;
-	
-	cellSize = MAZE_WIDTH / 27;
-	offset = 3;
-	//invincibleBalls
+	int x,y;	
+	int cellSize = MAZE_WIDTH / 27;
+	int offset = 3;
 	for(int i = 0; i < INVINCIBLE_BALL_NUMBER; i++){
 		x = (i % 2) * (cellSize * 25) + MAZE_X + offset;
 		y = i / 2 * (cellSize * 20) + MAZE_Y + offset + cellSize * 2;
-		setSprite(sprite, texture_sprites, x, y, INVINCIBLE_BALL_X, INVINCIBLE_BALL_Y, INVINCIBLE_BALL_SIZE, INVINCIBLE_BALL_SIZE);
+		setSprite(sprite, x, y, INVINCIBLE_BALL_X, INVINCIBLE_BALL_Y, INVINCIBLE_BALL_SIZE, INVINCIBLE_BALL_SIZE);
 		invincibleBalls.push_back(sprite);
 	}
+}
 
-	//littleBalls
+void Map::setLittleBalls(){
+	sf::Sprite sprite;
+	int x,y;	
+	int cellSize = MAZE_WIDTH / 27;
+	int offset = 7;
 	bool intersect = false; //intersect with other sprites
-	offset = 7;
 	for(int i = 0; i < 30; i++){
 		for(int j = 0; j < 27; j++){
 			intersect = false;
@@ -74,7 +88,7 @@ void Map::setSprites(sf::Texture &texture_sprites){
 				if((i+1) != 30 && (j+1) != 27 && mazeInfo[i+1][j] == 0 && mazeInfo[i][j+1] == 0 && mazeInfo[i+1][j+1] == 0){
 					x = j * cellSize + MAZE_X + offset;
 					y = i * cellSize + MAZE_Y + offset;
-					setSprite(sprite, texture_sprites, x, y, LITTLE_BALL_X, LITTLE_BALL_Y, LITTLE_BALL_SIZE, LITTLE_BALL_SIZE);
+					setSprite(sprite, x, y, LITTLE_BALL_X, LITTLE_BALL_Y, LITTLE_BALL_SIZE, LITTLE_BALL_SIZE);
 					//check if intersect
 					for(size_t i = 0; i < invincibleBalls.size(); i++){
 						if(sprite.getGlobalBounds().intersects(invincibleBalls.at(i).getGlobalBounds())){
@@ -94,13 +108,6 @@ void Map::setSprites(sf::Texture &texture_sprites){
 			}
 		}
 	}
-}
-
-void Map::setSprite(sf::Sprite &sprite, sf::Texture &texture_sprites, int x, int y, int sprite_x, int sprite_y, int width, int height){
-	sprite.setTexture(texture_sprites);
-	sprite.setPosition(x,y);
-	sprite.setTextureRect(sf::IntRect(sprite_x,sprite_y,width,height));
-
 }
 
 void Map::setMaze(){
@@ -164,7 +171,7 @@ void Map::run(sf::RenderWindow &window, sf::Clock &time){
 				pacman.dying = true;
 				//lose life
 				if(information.getLife() == 0){
-					//lose game
+					reset();
 				}else{
 					information.loseLife();
 				}
@@ -179,4 +186,15 @@ void Map::start(){
 	for(int i = 0; i < ghosts.size(); i++){
 		ghosts.at(i).stop = false;
 	}
+}
+
+void Map::reset(){
+	pacman.sprite.setPosition(PACMAN_MAZE_X, PACMAN_MAZE_Y);
+	information.clearScore();
+	information.gainLife();
+	information.gainLife();
+	invincibleBalls.clear();
+	litteBalls.clear();
+	setInvincibleBalls();
+	setLittleBalls();
 }

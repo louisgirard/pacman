@@ -75,5 +75,7 @@ void Pacman::animationDeath(){
 	cellAnimationDeath = (cellAnimationDeath + 1) % 12;
 	if(cellAnimationDeath == 0){
 		dying = false;
+		direction = Null;
+		sprite.setTextureRect(sf::IntRect(PACMAN_X,PACMAN_Y,PACMAN_SIZE,PACMAN_SIZE));
 	}
 }

@@ -20,6 +20,9 @@ int Information::getLife(){
 void Information::addScore(int sc){
 	score += sc;
 }
+void Information::clearScore(){
+	score = 0;
+}
 int Information::getScore(){
 	return score;
 }

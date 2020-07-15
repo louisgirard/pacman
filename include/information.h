@@ -15,6 +15,7 @@ public:
 	int getLife();
 	//score
 	void addScore(int sc);
+	void clearScore();
 	int getScore();
 	//high score
 	void readHighScore();

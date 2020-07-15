@@ -18,6 +18,7 @@ public:
 
 	sf::Sprite sprite;
 	bool stop;
+	bool invincible;
 
 protected:
 	int cellAnimation;

@@ -22,8 +22,7 @@ public:
 	void animationDeath();
 
 	int cellAnimationDeath;
-	bool endAnimationDeath;
-	bool invincible;
+	bool dying;
 	Direction keyInput; //hold last input key to turn pacman according to it
 };
 #endif

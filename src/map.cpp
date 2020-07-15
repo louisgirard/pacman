@@ -124,6 +124,15 @@ void Map::setMaze(){
 }
 
 void Map::run(sf::RenderWindow &window, sf::Clock &time){
+	//death
+	if(pacman.dying){
+		pacman.sprite.setPosition(PACMAN_MAZE_X, PACMAN_MAZE_Y);
+		if (time.getElapsedTime().asMilliseconds() >= 100){
+			pacman.animationDeath();
+			time.restart();
+		}
+		return;
+	}
 	//characters move
 	if (time.getElapsedTime().asMilliseconds() >= 35){
 		pacman.move(mazeInfo, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
@@ -146,15 +155,22 @@ void Map::run(sf::RenderWindow &window, sf::Clock &time){
 			litteBalls.erase(litteBalls.begin() + i);
 		}
 	}
-	
-	/*
-	pacman.stop = true;
-	if (!pacman.finAnimationMort){
-		if (time.getElapsedTime().asMilliseconds() >= 100){
-			pacman.animationMort();
-			time.restart();
+	//ghosts
+	for(size_t i = 0; i < ghosts.size(); i++){
+		if(pacman.sprite.getGlobalBounds().intersects(ghosts.at(i).sprite.getGlobalBounds())){
+			if(pacman.invincible && !ghosts.at(i).invincible){
+				//kill ghost
+			}else{
+				pacman.dying = true;
+				//lose life
+				if(information.getLife() == 0){
+					//lose game
+				}else{
+					information.loseLife();
+				}
+			}
 		}
-	}*/
+	}
 }
 
 void Map::start(){

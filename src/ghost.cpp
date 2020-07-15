@@ -1,6 +1,7 @@
 #include "ghost.h"
 
 Ghost::Ghost(int ghost_id):Character(GHOST_X + ghost_id * 5 * GHOST_SIZE,GHOST_Y,GHOST_SIZE,GHOST_SPACE){
+	invincible = true;
 	id = ghost_id;
 	direction = Down;
 	if(id == 0){

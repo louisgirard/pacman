@@ -1,6 +1,7 @@
 #include "pacman.h"
 
-Pacman::Pacman():Character(PACMAN_X,PACMAN_Y,PACMAN_SIZE,PACMAN_SPACE),keyInput{Null},invincible{false},cellAnimationDeath{0},endAnimationDeath{false}{
+Pacman::Pacman():Character(PACMAN_X,PACMAN_Y,PACMAN_SIZE,PACMAN_SPACE),keyInput{Null},cellAnimationDeath{0},dying{false}{
+	invincible = false;
 }
 
 void Pacman::input(){
@@ -72,5 +73,7 @@ void Pacman::animationDeath(){
 	}
 	sprite.setTextureRect(sf::IntRect(DEATH_X + 20 * cellAnimationDeath, DEATH_Y, 15, PACMAN_SIZE + 4));
 	cellAnimationDeath = (cellAnimationDeath + 1) % 12;
-	endAnimationDeath = !cellAnimationDeath;
+	if(cellAnimationDeath == 0){
+		dying = false;
+	}
 }

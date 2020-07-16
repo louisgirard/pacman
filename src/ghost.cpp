@@ -30,7 +30,7 @@ void Ghost::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int m
 				sprite.move(speed, 0);
 			}
 		}else if(collision == 2){
-			//end of maze, teleport pacman
+			//end of maze, teleport ghost
 			if (direction == Left){
 				sprite.move(maze_width - GHOST_SIZE,0);
 			}else{
@@ -59,15 +59,20 @@ void Ghost::animationMove(Direction direction){
 			sprite.setTextureRect(sf::IntRect(GHOST_END_WEAK_X + (GHOST_SIZE + GHOST_SPACE) * cellAnimation, GHOST_WEAK_Y,GHOST_SIZE,GHOST_SIZE));
 		}
 		cellAnimation = (cellAnimation + 1) % 4;
+	}else{//dead
+		sprite.setTextureRect(sf::IntRect(GHOST_DEAD_X + (GHOST_SIZE + GHOST_SPACE) * direction, GHOST_WEAK_Y,GHOST_SIZE,GHOST_SIZE));
+
 	}
 }
 
 void Ghost::setNormal(){
 	state = 0;
+	speed = 2;
 }
 
 void Ghost::setWeak(){
 	state = 1;
+	speed = 2;
 }
 
 void Ghost::setEndWeak(){

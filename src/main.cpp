@@ -48,18 +48,12 @@ int main()
 			title.displayBackground(window, sprites);
 			if(title.inputKey()){ //si on a appuye sur la touche pour sortir de l'ecran titre
 				on_title = false;
+				map.startTimer.restart();
 			}
 		}else{
 			map.displayBackground();
 			/*On Map*/
-			if(!map.started){
-				if (time.getElapsedTime().asMilliseconds() >= 2000){
-					map.start();
-					time.restart();
-				}
-			}else{
-				map.run();
-			}
+			map.run();
 		}
 
 		window.display();

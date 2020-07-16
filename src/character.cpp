@@ -59,7 +59,7 @@ int Character::checkMazeCollisions(int maze[30][27], int x, int y, int width, in
 	}else if ((cell2.y - cell1.y) == 2){
 		cell3.x = cell1.x;
 		cell3.y = cell1.y + 1;
-		needCell3 = true;		
+		needCell3 = true;
 	}
 
 	//if in front of not passable cells or edge of maze

@@ -131,33 +131,59 @@ void Map::setMaze(){
 }
 
 void Map::run(){
+	if (!started){
+		if(startTimer.getElapsedTime().asMilliseconds() >= 2000){
+			start();
+			startTimer.restart();
+		}
+		return;
+	}
 	//death
 	if(pacman.dying){
-		pacman.sprite.setPosition(PACMAN_MAZE_X, PACMAN_MAZE_Y);
-		if (time.getElapsedTime().asMilliseconds() >= 100){
-			pacman.animationDeath();
-			time.restart();
+		//pacman.sprite.setPosition(PACMAN_MAZE_X, PACMAN_MAZE_Y);
+		if (pacmanTimer.getElapsedTime().asMilliseconds() >= 100){
+			if(pacman.animationDeath()){// animation end
+				pacman.sprite.setPosition(PACMAN_MAZE_X, PACMAN_MAZE_Y);
+				started = false;
+				startTimer.restart();
+			}
+			pacmanTimer.restart();
 		}
 		return;
 	}
 	//characters move
-	if (time.getElapsedTime().asMilliseconds() >= 35){
+	if (pacmanTimer.getElapsedTime().asMilliseconds() >= NORMAL_SPEED){
 		pacman.move(mazeInfo, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
-		for(int i = 0; i < ghosts.size(); i++){
-			ghosts.at(i).move(mazeInfo, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
+		pacmanTimer.restart();
+	}
+	if(ghostsWeak){
+		if (ghostsTimer.getElapsedTime().asMilliseconds() >= (NORMAL_SPEED * 2)){
+			for(int i = 0; i < ghosts.size(); i++){
+				ghosts.at(i).move(mazeInfo, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
+			}
+			ghostsTimer.restart();
+		}		
+	}else{		
+		if (ghostsTimer.getElapsedTime().asMilliseconds() >= NORMAL_SPEED){
+			for(int i = 0; i < ghosts.size(); i++){
+				ghosts.at(i).move(mazeInfo, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
+			}
+			ghostsTimer.restart();
 		}
-		time.restart();
 	}
 	//invincible
 	if(ghostsWeak){
 		if (invincibleTimer.getElapsedTime().asMilliseconds() >= 10000){
 			ghostsWeak = false;
+			ghostsEaten = 0;
 			for(size_t i = 0; i < ghosts.size(); i++){
-				ghosts.at(i).setNormal();
+				if(!ghosts.at(i).dead())
+					ghosts.at(i).setNormal();
 			}	
 		}else if(invincibleTimer.getElapsedTime().asMilliseconds() >= 7000){
 			for(size_t i = 0; i < ghosts.size(); i++){
-				ghosts.at(i).setEndWeak();
+				if(!ghosts.at(i).dead())
+					ghosts.at(i).setEndWeak();
 			}
 		}
 	}
@@ -187,7 +213,8 @@ void Map::run(){
 				//ghost invincible = already killed
 				if(ghosts.at(i).weak() || ghosts.at(i).endWeak()){
 					//kill ghost
-					information.addScore(100);
+					ghostsEaten++;
+					information.addScore(100 * pow(2,ghostsEaten));
 					ghosts.at(i).setDead();				
 				}
 			}else{
@@ -201,11 +228,19 @@ void Map::run(){
 			}
 		}
 	}
+	//check victory
+	if(litteBalls.size() == 0 && invincibleBalls.size() == 0){
+		reset();
+		started = false;
+		std::cout << "Victory!!!" << std::endl;
+	}
 }
 
 void Map::start(){
 	started = true;
 	pacman.stop = false;
+	pacmanTimer.restart();
+	ghostsTimer.restart();
 	for(int i = 0; i < ghosts.size(); i++){
 		ghosts.at(i).stop = false;
 	}

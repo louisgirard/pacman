@@ -10,6 +10,7 @@
 #define GHOST_WEAK_X 3
 #define GHOST_WEAK_Y 163
 #define GHOST_END_WEAK_X 43
+#define GHOST_DEAD_X 83
 #define GHOST_SIZE 14
 #define GHOST_SPACE 6 //space between ghost sprites in sprite "pacman-sprites"
 

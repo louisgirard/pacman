@@ -66,7 +66,7 @@ void Pacman::animationMove(Direction direction){
 	cellAnimation = (cellAnimation + 1) % 4;
 }
 
-void Pacman::animationDeath(){
+bool Pacman::animationDeath(){
 	if(cellAnimationDeath == 0){
 		sprite.setPosition(sprite.getPosition().x - 1, sprite.getPosition().y);
 	}
@@ -76,5 +76,8 @@ void Pacman::animationDeath(){
 		dying = false;
 		direction = Null;
 		sprite.setTextureRect(sf::IntRect(PACMAN_X,PACMAN_Y,PACMAN_SIZE,PACMAN_SIZE));
+		return true;
+	}else{
+		return false;
 	}
 }

@@ -19,7 +19,7 @@ public:
 	void input();
 	void move(int maze[30][27], int maze_x, int maze_y, int maze_width, int maze_height);
 	void animationMove(Direction direction);
-	void animationDeath();
+	bool animationDeath();
 
 	int cellAnimationDeath;
 	bool dying;

@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <iostream>
+#include <cmath>
 #include "display_information.h"
 #include "pacman.h"
 #include "ghost.h"
@@ -40,6 +41,8 @@
 
 #define GHOST_NUMBER 1
 
+#define NORMAL_SPEED 30
+
 class Map
 {
 public:
@@ -51,14 +54,17 @@ public:
 	void run();
 	void start();
 	bool started = false;
+	sf::Clock startTimer;
 	
 private:
 	sf::RenderWindow &window;
 	sf::Texture &texture;
-	sf::Clock time;
+	sf::Clock pacmanTimer;
+	sf::Clock ghostsTimer;
 	sf::Clock invincibleTimer;
 
-	bool ghostsWeak;
+	bool ghostsWeak = false;
+	int ghostsEaten = 0;
 	sf::Sprite maze;
 	Display display;
 	//hold passable/not passable cells

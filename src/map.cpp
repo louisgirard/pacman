@@ -1,20 +1,12 @@
 #include "map.h"
 
-Map::Map(sf::Texture &texture_background, sf::Texture &texture_sprites, sf::RenderWindow &main_window):window{main_window},texture{texture_sprites}{
-	setBackground(texture_background);
-	setMaze();
+Map::Map(sf::Texture &texture_background, sf::Texture &texture_sprites, sf::RenderWindow &main_window):window{main_window},texture{texture_sprites},maze{texture_background}{
 	setSprites();
-}
-
-void Map::setBackground(sf::Texture &texture_background){
-    maze.setTexture(texture_background);
-    maze.setPosition(MAP_X,MAP_Y);
-    maze.setTextureRect(sf::IntRect(0,0,MAP_WIDTH,MAP_HEIGHT));
 }
 
 void Map::displayBackground(){
 	//display maze
-	window.draw(maze);
+	window.draw(maze.sprite);
 	//display scores
 	display.displayScore(information.getScore(), texture, MAP_X + 50, MAP_Y - 14, window);
 	display.displayHighScore(information.getHighScore(), texture, MAP_X + 150, MAP_Y - 14, window, true);
@@ -83,9 +75,9 @@ void Map::setLittleBalls(){
 	for(int i = 0; i < 30; i++){
 		for(int j = 0; j < 27; j++){
 			intersect = false;
-			if(mazeInfo[i][j] == 0){
+			if(maze.info[i][j] == 0){
 				//1 cell = 2 cells in mazeInfo, remove dupplicate
-				if((i+1) != 30 && (j+1) != 27 && mazeInfo[i+1][j] == 0 && mazeInfo[i][j+1] == 0 && mazeInfo[i+1][j+1] == 0){
+				if((i+1) != 30 && (j+1) != 27 && maze.info[i+1][j] == 0 && maze.info[i][j+1] == 0 && maze.info[i+1][j+1] == 0){
 					x = j * cellSize + MAZE_X + offset;
 					y = i * cellSize + MAZE_Y + offset;
 					setSprite(sprite, x, y, LITTLE_BALL_X, LITTLE_BALL_Y, LITTLE_BALL_SIZE, LITTLE_BALL_SIZE);
@@ -110,26 +102,6 @@ void Map::setLittleBalls(){
 	}
 }
 
-void Map::setMaze(){
-	std::ifstream mazefile;
-	std::string fileline;
-	int line = 0, column = 0;
-
-	mazefile.open("data/maze.txt");
-	if (!mazefile) {
-    	perror("open file maze");
-	}
-	while(std::getline(mazefile, fileline)){
-		for(std::string::iterator it = fileline.begin(); it != fileline.end(); ++it) {
-		    mazeInfo[line][column] = *it - 48; //ASCII code, digits start from 48
-		    column++;
-		}
-		column = 0;
-		line++;
-	}
-	mazefile.close();
-}
-
 void Map::run(){
 	if (!started){
 		if(startTimer.getElapsedTime().asMilliseconds() >= 2000){
@@ -140,7 +112,6 @@ void Map::run(){
 	}
 	//death
 	if(pacman.dying){
-		//pacman.sprite.setPosition(PACMAN_MAZE_X, PACMAN_MAZE_Y);
 		if (pacmanTimer.getElapsedTime().asMilliseconds() >= 100){
 			if(pacman.animationDeath()){// animation end
 				pacman.sprite.setPosition(PACMAN_MAZE_X, PACMAN_MAZE_Y);
@@ -153,20 +124,26 @@ void Map::run(){
 	}
 	//characters move
 	if (pacmanTimer.getElapsedTime().asMilliseconds() >= NORMAL_SPEED){
-		pacman.move(mazeInfo, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
+		pacman.move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
 		pacmanTimer.restart();
 	}
 	if(ghostsWeak){
 		if (ghostsTimer.getElapsedTime().asMilliseconds() >= (NORMAL_SPEED * 2)){
 			for(int i = 0; i < ghosts.size(); i++){
-				ghosts.at(i).move(mazeInfo, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
+				ghosts.at(i).setPattern(astar.shortestPath(maze.graph, 0, 0, 4, 0));
+				ghosts.at(i).move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
 			}
 			ghostsTimer.restart();
 		}		
 	}else{		
 		if (ghostsTimer.getElapsedTime().asMilliseconds() >= NORMAL_SPEED){
 			for(int i = 0; i < ghosts.size(); i++){
-				ghosts.at(i).move(mazeInfo, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
+				int ghost_x = ghosts.at(i).cellX(MAZE_X, MAZE_WIDTH);
+				int ghost_y = ghosts.at(i).cellY(MAZE_Y, MAZE_HEIGHT);
+				int pacman_x = pacman.cellX(MAZE_X, MAZE_WIDTH);
+				int pacman_y = pacman.cellY(MAZE_Y, MAZE_HEIGHT);
+				ghosts.at(i).setPattern(astar.shortestPath(maze.graph, ghost_x, ghost_y, pacman_x, pacman_y));
+				ghosts.at(i).move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
 			}
 			ghostsTimer.restart();
 		}

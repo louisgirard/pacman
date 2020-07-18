@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <list>
 #include "character.h"
 
 #define GHOST_X 3
@@ -22,6 +23,7 @@ public:
 	void input();
 	void move(int maze[30][27], int maze_x, int maze_y, int maze_width, int maze_height);
 	void animationMove(Direction direction);
+	void setPattern(std::list<Direction> new_pattern);
 
 	void setNormal();
 	void setWeak();

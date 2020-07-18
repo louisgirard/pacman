@@ -9,15 +9,11 @@
 #include "pacman.h"
 #include "ghost.h"
 #include "information.h"
-
-#define MAP_X 40
-#define MAP_Y 31
-#define MAP_WIDTH 224
-#define MAP_HEIGHT 248
+#include "maze.h"
 
 #define MAZE_X (MAP_X + 4)
 #define MAZE_Y (MAP_Y + 4)
-#define MAZE_WIDTH (MAP_WIDTH - 8)
+#define MAZE_WIDTH (MAP_WIDTH - 8) //inside of maze
 #define MAZE_HEIGHT (MAP_HEIGHT - 8)
 
 #define PACMAN_MAZE_X (MAZE_X + (MAZE_WIDTH - PACMAN_SIZE) / 2)
@@ -62,25 +58,22 @@ private:
 	sf::Clock pacmanTimer;
 	sf::Clock ghostsTimer;
 	sf::Clock invincibleTimer;
+	Astar astar;
 
 	bool ghostsWeak = false;
 	int ghostsEaten = 0;
-	sf::Sprite maze;
 	Display display;
-	//hold passable/not passable cells
-	//0: passable, 1: not passable, 2: ghost cage, 3: ghost cage exit, 4: maze exit
-	int mazeInfo[30][27];
+	Maze maze;
+
 
 	Pacman pacman;
 	std::vector<Ghost> ghosts;
 	sf::Sprite ready;
 	std::vector<sf::Sprite> litteBalls;
 	std::vector<sf::Sprite> invincibleBalls;
-
-	void setBackground(sf::Texture &texture_background);
+	
 	void setSprite(sf::Sprite &sprite, int x, int y, int sprite_x, int sprite_y, int width, int height);
 	void setSprites();
-	void setMaze();
 	void setInvincibleBalls();
 	void setLittleBalls();
 	void reset();

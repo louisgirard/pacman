@@ -102,3 +102,15 @@ int Character::checkMazeCollisions(int maze[30][27], int x, int y, int width, in
 		}
 	}
 }
+
+int Character::cellX(int maze_x, int maze_width){
+	int cellSize = maze_width / 27;
+	int x_character = sprite.getPosition().x - maze_x;
+	return x_character / cellSize;
+}
+
+int Character::cellY(int maze_y, int maze_height){
+	int cellSize = maze_height / 30;
+	int y_character = sprite.getPosition().y - maze_y;
+	return y_character / cellSize;
+}

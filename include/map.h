@@ -11,7 +11,7 @@
 #include "information.h"
 #include "maze.h"
 
-#define MAZE_X (MAP_X + 4)
+#define MAZE_X (MAP_X + 4) //without edges
 #define MAZE_Y (MAP_Y + 4)
 #define MAZE_WIDTH (MAP_WIDTH - 8) //inside of maze
 #define MAZE_HEIGHT (MAP_HEIGHT - 8)

@@ -23,7 +23,7 @@ public:
 	void input();
 	void move(int maze[30][27], int maze_x, int maze_y, int maze_width, int maze_height);
 	void animationMove(Direction direction);
-	void setPattern(std::list<Direction> new_pattern);
+	Direction next_direction;
 
 	void setNormal();
 	void setWeak();
@@ -38,7 +38,5 @@ public:
 private:
 	int state; //0 = normal, 1 = weak, 2 = end weak, 3 = dead
 	int id;
-	std::vector<Direction> pattern;
-	int id_current_pattern;
 };
 #endif

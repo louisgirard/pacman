@@ -77,7 +77,7 @@ int Character::checkMazeCollisions(int maze[30][27], int x, int y, int width, in
 		//si on est en dessous ou egal a la marge de collision avec un mur alors il y a une collision
 		if ((distanceFrontalWall <= MARGIN_COLLISION_MAX) && 
 			(distanceFrontalWall >= MARGIN_COLLISION_MIN)){
-			if (maze[cell1.y][cell1.x] == 4 || maze[cell2.y][cell2.x] == 4){
+			if (maze[cell1.y][cell1.x] == 3 || maze[cell2.y][cell2.x] == 3){
 				return 2; //end of maze
 			}else{
 				return 1; //collision
@@ -104,13 +104,33 @@ int Character::checkMazeCollisions(int maze[30][27], int x, int y, int width, in
 }
 
 int Character::cellX(int maze_x, int maze_width){
-	int cellSize = maze_width / 27;
-	int x_character = sprite.getPosition().x - maze_x;
-	return x_character / cellSize;
+	float cellSize = maze_width / 27;
+	float x_character = sprite.getPosition().x - maze_x;
+	float decimal = x_character / cellSize - std::floor(x_character / cellSize);
+	if(decimal < 0.2){
+		return x_character / cellSize;
+	}
+	if(direction == Left){
+		return std::ceil(x_character / cellSize);
+	}else if(direction == Right){
+		return std::floor(x_character / cellSize);
+	}else{
+		return x_character / cellSize;
+	}
 }
 
 int Character::cellY(int maze_y, int maze_height){
-	int cellSize = maze_height / 30;
-	int y_character = sprite.getPosition().y - maze_y;
-	return y_character / cellSize;
+	float cellSize = maze_height / 30;
+	float y_character = sprite.getPosition().y - maze_y;
+	float decimal = y_character / cellSize - std::floor(y_character / cellSize);
+	if(decimal < 0.2){
+		return y_character / cellSize;
+	}
+	if(direction == Up){
+		return std::ceil(y_character / cellSize);
+	}else if(direction == Down){
+		return std::floor(y_character / cellSize);
+	}else{
+		return y_character / cellSize;
+	}
 }

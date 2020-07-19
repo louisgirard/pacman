@@ -130,7 +130,7 @@ void Map::run(){
 	if(ghostsWeak){
 		if (ghostsTimer.getElapsedTime().asMilliseconds() >= (NORMAL_SPEED * 2)){
 			for(int i = 0; i < ghosts.size(); i++){
-				ghosts.at(i).setPattern(astar.shortestPath(maze.graph, 0, 0, 4, 0));
+				//ghosts.at(i).setPattern(dijkstra.shortestPath(maze.graph, 0, 0, 4, 0));
 				ghosts.at(i).move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
 			}
 			ghostsTimer.restart();
@@ -142,7 +142,7 @@ void Map::run(){
 				int ghost_y = ghosts.at(i).cellY(MAZE_Y, MAZE_HEIGHT);
 				int pacman_x = pacman.cellX(MAZE_X, MAZE_WIDTH);
 				int pacman_y = pacman.cellY(MAZE_Y, MAZE_HEIGHT);
-				ghosts.at(i).setPattern(astar.shortestPath(maze.graph, ghost_x, ghost_y, pacman_x, pacman_y));
+				ghosts.at(i).next_direction = astar.shortestPathDirection(maze.graph, ghost_x, ghost_y, pacman_x, pacman_y);
 				ghosts.at(i).move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
 			}
 			ghostsTimer.restart();

@@ -4,22 +4,21 @@ Ghost::Ghost(int ghost_id):Character(GHOST_X + ghost_id * 5 * GHOST_SIZE,GHOST_Y
 	state = 0;
 	id = ghost_id;
 	direction = Down;
-	id_current_pattern = 0;
+	next_direction = Null;
 }
 
 void Ghost::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int maze_height){
 	Direction oldDirection = direction;
-	int collision, temp_pattern;
+	int collision;
 	if(!stop){
-		//check if can change direction
-		temp_pattern = (id_current_pattern + 1) % pattern.size();
-		direction = pattern.at(temp_pattern);
-		collision = checkMazeCollisions(maze,maze_x,maze_y,maze_width,maze_height);
-		if (collision == 0){ //if no collision when changing direction
-			id_current_pattern = temp_pattern;
-		}else{
-			direction = oldDirection;
+		if (next_direction != Null){
+			direction = next_direction;
 			collision = checkMazeCollisions(maze,maze_x,maze_y,maze_width,maze_height);
+			if (collision == 0){ //if no collision when changing direction
+				next_direction = Null;
+			}else{
+				direction = oldDirection;
+			}
 		}
 		//follow same direction if no collision
 		if (collision == 0){
@@ -40,10 +39,6 @@ void Ghost::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int m
 			}else{
 				sprite.move(GHOST_SIZE - maze_width,0);
 			}
-		}else{
-			//collision, change direction
-			id_current_pattern  = (id_current_pattern + 1) % pattern.size();
-			direction = pattern.at(id_current_pattern);
 		}
 	}
 }
@@ -66,15 +61,6 @@ void Ghost::animationMove(Direction direction){
 	}else{//dead
 		sprite.setTextureRect(sf::IntRect(GHOST_DEAD_X + (GHOST_SIZE + GHOST_SPACE) * direction, GHOST_WEAK_Y,GHOST_SIZE,GHOST_SIZE));
 
-	}
-}
-
-void Ghost::setPattern(std::list<Direction> new_pattern){
-	id_current_pattern = 0;
-	pattern.clear();
-	std::cout << new_pattern.size() << std::endl;
-	for (std::list<Direction>::iterator it = new_pattern.begin(); it != new_pattern.end(); ++it){
-		pattern.push_back(*it);
 	}
 }
 

@@ -2,6 +2,8 @@
 #define CHARACTER
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
+#include <cmath>
 
 #define MARGIN_COLLISION_MAX 2 //margin between character and a wall before collision
 #define MARGIN_COLLISION_MIN 1

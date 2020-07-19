@@ -2,7 +2,6 @@
 #define ASTAR
 
 #include <vector>
-#include <list>
 #include <cmath>
 #include <queue>
 #include <algorithm>
@@ -25,13 +24,7 @@ struct CompareNodes
     {
 		int f1 = node1->g + node1->h;
 		int f2 = node2->g + node2->h;
-		if(f1 < f2){
-			return 1;
-		}else if(f1 == f2){
-			return 0;
-		}else{
-			return -1;
-		}
+		return (f1 > f2);
     }
 };
 
@@ -43,14 +36,16 @@ enum Direction{Left,Right,Up,Down,Null};
 class Astar
 {
 public:
-	std::list<Direction> shortestPath(std::vector<std::vector<Node>> &graph, int start_x, int start_y, int goal_x, int goal_y);
-	void printPath(std::list<Direction> path);
+	std::vector<Direction> shortestPath(std::vector<std::vector<Node>> &graph, int start_x, int start_y, int goal_x, int goal_y);
+	Direction shortestPathDirection(std::vector<std::vector<Node>> &graph, int start_x, int start_y, int goal_x, int goal_y);
+	void printPath(std::vector<Direction> path);
 
 private:
-	std::list<Direction> reconstructPath(Node *start, Node *current);
-	void treatNeighbor(Node *neighbor, Node *current, Node* goal, std::priority_queue<Node*, std::vector<Node*>, CompareNodes> &openList, std::vector<Node*> &closedList);
+	std::vector<Direction> reconstructPath(Node *start, Node *current);
+	void treatNeighbor(std::vector<std::vector<Node>> &graph, Node *neighbor, Node *current, Node* goal, std::priority_queue<Node*, std::vector<Node*>, CompareNodes> &openList, std::vector<Node*> &closedList);
 	int heuristic(Node *start, Node *goal);
 	bool equalNodes(Node *node1, Node *node2);
+	int nodeValue(std::vector<std::vector<Node>> &graph, Node *node);
 	Direction nodeDirection(Node *node);
 	
 };

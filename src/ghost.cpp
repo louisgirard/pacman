@@ -35,9 +35,9 @@ void Ghost::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int m
 		}else if(collision == 2){
 			//end of maze, teleport ghost
 			if (direction == Left){
-				sprite.move(maze_width - GHOST_SIZE,0);
+				sprite.move(maze_width - GHOST_SIZE - 10, 0);
 			}else{
-				sprite.move(GHOST_SIZE - maze_width,0);
+				sprite.move(GHOST_SIZE - maze_width + 10, 0);
 			}
 		}
 	}

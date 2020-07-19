@@ -45,9 +45,9 @@ void Pacman::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int 
 		}else if(collision == 2){
 			//end of maze, teleport pacman
 			if (direction == Left){
-				sprite.move(maze_width - PACMAN_SIZE,0);
+				sprite.move(maze_width - PACMAN_SIZE - 10, 0);
 			}else{
-				sprite.move(PACMAN_SIZE - maze_width,0);
+				sprite.move(PACMAN_SIZE - maze_width + 10, 0);
 			}
 		}
 	}

@@ -56,7 +56,7 @@ std::vector<Direction> Astar::shortestPath(std::vector<std::vector<Node>> &graph
 }
 
 void Astar::treatNeighbor(std::vector<std::vector<Node>> &graph, Node *neighbor, Node *current, Node* goal, std::priority_queue<Node*, std::vector<Node*>, CompareNodes> &openList, std::vector<Node*> &closedList){
-	if(nodeValue(graph, neighbor) == 0){
+	if(nodeValue(graph, neighbor) == 0 || nodeValue(graph, neighbor) == 3){
 		if(!(std::find(closedList.begin(), closedList.end(), neighbor) != closedList.end())){
 			if(current->g + 1 < neighbor->g){
 				neighbor->g = current->g + 1;
@@ -144,8 +144,11 @@ int Astar::nodeValue(std::vector<std::vector<Node>> &graph, Node *node){
 	value4 = graph.at(node->y+1).at(node->x+1).value;
 	if(value1 == 0 && value2 == 0 && value3 == 0 && value4 == 0){
 		return 0;
+	}else if(value1 == 3 || value2 == 3 || value3 == 3 || value4 == 3){
+		std::cout << "value = 3" << std::endl;
+		return 3;
 	}else{
-		return 1;
+		return -1;
 	}
 }
 

@@ -142,6 +142,7 @@ void Map::run(){
 				int ghost_y = ghosts.at(i).cellY(MAZE_Y, MAZE_HEIGHT);
 				int pacman_x = pacman.cellX(MAZE_X, MAZE_WIDTH);
 				int pacman_y = pacman.cellY(MAZE_Y, MAZE_HEIGHT);
+				std::cout << "pacman_x = " << pacman_x << ", pacman_y = " << pacman_y << std::endl;
 				ghosts.at(i).next_direction = astar.shortestPathDirection(maze.graph, ghost_x, ghost_y, pacman_x, pacman_y);
 				ghosts.at(i).move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
 			}

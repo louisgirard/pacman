@@ -20,6 +20,7 @@ void Ghost::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int m
 				direction = oldDirection;
 			}
 		}
+		collision = checkMazeCollisions(maze,maze_x,maze_y,maze_width,maze_height);
 		//follow same direction if no collision
 		if (collision == 0){
 			animationMove(direction);
@@ -35,10 +36,12 @@ void Ghost::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int m
 		}else if(collision == 2){
 			//end of maze, teleport ghost
 			if (direction == Left){
-				sprite.move(maze_width - GHOST_SIZE - 10, 0);
+				sprite.move(maze_width - GHOST_SIZE - 11, 0);
 			}else{
-				sprite.move(GHOST_SIZE - maze_width + 10, 0);
+				sprite.move(GHOST_SIZE - maze_width + 11, 0);
 			}
+		}else{
+			std::cout << "collision" << std::endl;
 		}
 	}
 }

@@ -30,25 +30,25 @@ int Character::checkMazeCollisions(int maze[30][27], int x, int y, int width, in
 	y_character = sprite.getPosition().y - y;
 
 	if (direction == Up){ //focus on up cells
-		cell1.x = x_character /cellSize;
-		cell1.y = y_character /cellSize - 1;
-		cell2.x = (x_character + sprite_size) / cellSize;
+		cell1.x = cellX(x, width);
+		cell1.y = cellY(y, height) - 1;
+		cell2.x = cell1.x + 1;
 		cell2.y = cell1.y;
 	}else if (direction == Down){ //focus on down cells
-		cell1.x = x_character /cellSize;
-		cell1.y = (y_character + sprite_size) /cellSize + 1;
-		cell2.x = (x_character + sprite_size) /cellSize;
+		cell1.x = cellX(x, width);
+		cell1.y = cellY(y, height) + 2;
+		cell2.x = cell1.x + 1;
 		cell2.y = cell1.y;
 	}else if (direction == Left){
-		cell1.x = x_character /cellSize - 1;
-		cell1.y = y_character /cellSize;
+		cell1.x = cellX(x, width) - 1;
+		cell1.y = cellY(y, height);
 		cell2.x = cell1.x;
-		cell2.y = (y_character + sprite_size) /cellSize;
+		cell2.y = cell1.y + 1;
 	}else if (direction == Right){
-		cell1.x = (x_character + sprite_size) /cellSize + 1;
-		cell1.y = y_character /cellSize;
+		cell1.x = cellX(x, width) + 2;
+		cell1.y = cellY(y, height);
 		cell2.x = cell1.x;
-		cell2.y = (y_character + sprite_size) /cellSize;
+		cell2.y = cell1.y + 1;
 	}
 
 	//if cell between cell1 and 2 then need to consider it
@@ -63,8 +63,10 @@ int Character::checkMazeCollisions(int maze[30][27], int x, int y, int width, in
 	}
 
 	//if in front of not passable cells or edge of maze
-	if ((maze[cell1.y][cell1.x] != 0) || (maze[cell2.y][cell2.x] != 0) || ((maze[cell3.y][cell3.x] != 0) && needCell3)
-		|| (cell1.x < 0) || (cell1.y < 0) || (cell1.x > 26) || (cell1.y > 29)){
+	if((cell1.x < 0) || (cell1.y < 0) || (cell1.x > 26) || (cell1.y > 29)){
+		return 1; //collision
+	}
+	if ((maze[cell1.y][cell1.x] != 0) || (maze[cell2.y][cell2.x] != 0) || ((maze[cell3.y][cell3.x] != 0) && needCell3)){		
 		if (direction == Up){
 			distanceFrontalWall = y_character - cell1.y * cellSize - cellSize;
 		}else if (direction == Down){
@@ -107,7 +109,7 @@ int Character::cellX(int maze_x, int maze_width){
 	float cellSize = maze_width / 27;
 	float x_character = sprite.getPosition().x - maze_x;
 	float decimal = x_character / cellSize - std::floor(x_character / cellSize);
-	if(decimal < 0.2){
+	if(decimal < 0.25){
 		return x_character / cellSize;
 	}
 	if(direction == Left){
@@ -123,7 +125,7 @@ int Character::cellY(int maze_y, int maze_height){
 	float cellSize = maze_height / 30;
 	float y_character = sprite.getPosition().y - maze_y;
 	float decimal = y_character / cellSize - std::floor(y_character / cellSize);
-	if(decimal < 0.2){
+	if(decimal < 0.25){
 		return y_character / cellSize;
 	}
 	if(direction == Up){

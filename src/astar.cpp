@@ -56,7 +56,7 @@ std::vector<Direction> Astar::shortestPath(std::vector<std::vector<Node>> &graph
 }
 
 void Astar::treatNeighbor(std::vector<std::vector<Node>> &graph, Node *neighbor, Node *current, Node* goal, std::priority_queue<Node*, std::vector<Node*>, CompareNodes> &openList, std::vector<Node*> &closedList){
-	if(nodeValue(graph, neighbor) == 0){
+	if(nodeValue(graph, neighbor) == 0 || nodeValue(graph, neighbor) == 2){
 		if(!(std::find(closedList.begin(), closedList.end(), neighbor) != closedList.end())){
 			if(current->g + 1 < neighbor->g){
 				neighbor->g = current->g + 1;
@@ -79,12 +79,17 @@ std::vector<Direction> Astar::reconstructPath(Node *start, Node *current){
 		path.insert(path.begin(),nodeDirection(current));
 		current = current->father;
 	}
-	printPath(path);
+	//printPath(path);
 	return path;
 }
 
 Direction Astar::shortestPathDirection(std::vector<std::vector<Node>> &graph, int start_x, int start_y, int goal_x, int goal_y){
-	return shortestPath(graph, start_x, start_y, goal_x, goal_y).front();
+	std::vector<Direction> path = shortestPath(graph, start_x, start_y, goal_x, goal_y);
+	if(path.size() > 0){
+		return shortestPath(graph, start_x, start_y, goal_x, goal_y).front();
+	}else{
+		return Null;
+	}
 }
 
 int Astar::heuristic(Node *start, Node *goal){
@@ -145,6 +150,8 @@ int Astar::nodeValue(std::vector<std::vector<Node>> &graph, Node *node){
 	value4 = graph.at(node->y+1).at(node->x+1).value;
 	if(value1 == 0 && value2 == 0 && value3 == 0 && value4 == 0){
 		return 0;
+	}else if((value1 + value2 + value3 + value4) == 4){
+		return 2;
 	}else{
 		return -1;
 	}

@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <ctime>
 #include "display_information.h"
 #include "pacman.h"
 #include "ghost.h"
@@ -60,7 +61,6 @@ private:
 	sf::Clock invincibleTimer;
 	Astar astar;
 
-	bool ghostsWeak = false;
 	int ghostsEaten = 0;
 	Display display;
 	Maze maze;

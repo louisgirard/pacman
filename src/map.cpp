@@ -103,6 +103,7 @@ void Map::setLittleBalls(){
 }
 
 void Map::run(){
+	std::srand(std::time(nullptr));
 	if (!started){
 		if(startTimer.getElapsedTime().asMilliseconds() >= 2000){
 			start();
@@ -127,49 +128,63 @@ void Map::run(){
 		pacman.move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
 		pacmanTimer.restart();
 	}
-	if(ghostsWeak){
-		if (ghostsTimer.getElapsedTime().asMilliseconds() >= (NORMAL_SPEED * 2)){
-			for(int i = 0; i < ghosts.size(); i++){
-				//ghosts.at(i).setPattern(dijkstra.shortestPath(maze.graph, 0, 0, 4, 0));
+	bool ghost_restart = false;
+	for(int i = 0; i < ghosts.size(); i++){
+		if(ghosts.at(i).weak() || ghosts.at(i).endWeak()){
+			if (ghostsTimer.getElapsedTime().asMilliseconds() >= (NORMAL_SPEED * 2)){
+				Direction direction;
+				int dir = rand() % 4 + 1;
+				direction = static_cast<Direction>(dir);
+				//std::cout << "direction = " << direction << std::endl;
+				ghosts.at(i).next_direction = direction;
 				ghosts.at(i).move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
+
+				ghost_restart = true;
 			}
-			ghostsTimer.restart();
-		}		
-	}else{		
-		if (ghostsTimer.getElapsedTime().asMilliseconds() >= NORMAL_SPEED){
-			for(int i = 0; i < ghosts.size(); i++){
+		}else if(ghosts.at(i).dead()){
+			if (ghostsTimer.getElapsedTime().asMilliseconds() >= (NORMAL_SPEED * 2)){
+				int ghost_x = ghosts.at(i).cellX(MAZE_X, MAZE_WIDTH);
+				int ghost_y = ghosts.at(i).cellY(MAZE_Y, MAZE_HEIGHT);
+				ghosts.at(i).next_direction = astar.shortestPathDirection(maze.graph, ghost_x, ghost_y, 12, 13);
+				//if ghost arrived in ghosts cage
+				if(ghosts.at(i).next_direction == Null){
+					ghosts.at(i).setNormal();
+				}
+				ghosts.at(i).move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
+				
+				ghost_restart = true;
+			}
+		}else{ //normal
+			if (ghostsTimer.getElapsedTime().asMilliseconds() >= NORMAL_SPEED){
 				int ghost_x = ghosts.at(i).cellX(MAZE_X, MAZE_WIDTH);
 				int ghost_y = ghosts.at(i).cellY(MAZE_Y, MAZE_HEIGHT);
 				int pacman_x = pacman.cellX(MAZE_X, MAZE_WIDTH);
 				int pacman_y = pacman.cellY(MAZE_Y, MAZE_HEIGHT);
-				std::cout << "pacman_x = " << pacman_x << ", pacman_y = " << pacman_y << std::endl;
-				std::cout << "ghost_x = " << ghost_x << ", ghost_y = " << ghost_y << std::endl;
 				ghosts.at(i).next_direction = astar.shortestPathDirection(maze.graph, ghost_x, ghost_y, pacman_x, pacman_y);
 				ghosts.at(i).move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
+
+				ghost_restart = true;
 			}
-			ghostsTimer.restart();
 		}
 	}
+	if(ghost_restart){
+		ghostsTimer.restart();
+	}
 	//invincible
-	if(ghostsWeak){
-		if (invincibleTimer.getElapsedTime().asMilliseconds() >= 10000){
-			ghostsWeak = false;
-			ghostsEaten = 0;
-			for(size_t i = 0; i < ghosts.size(); i++){
-				if(!ghosts.at(i).dead())
-					ghosts.at(i).setNormal();
-			}	
-		}else if(invincibleTimer.getElapsedTime().asMilliseconds() >= 7000){
-			for(size_t i = 0; i < ghosts.size(); i++){
-				if(!ghosts.at(i).dead())
-					ghosts.at(i).setEndWeak();
+	for(int i = 0; i < ghosts.size(); i++){
+		if(ghosts.at(i).weak()){
+			if (invincibleTimer.getElapsedTime().asMilliseconds() >= 7000){
+				ghosts.at(i).setEndWeak();
+			}
+		}else if(!ghosts.at(i).dead()){
+			if (invincibleTimer.getElapsedTime().asMilliseconds() >= 10000){
+				ghosts.at(i).setNormal();
 			}
 		}
 	}
 	//invincibleBalls
 	for(size_t i = 0; i < invincibleBalls.size(); i++){
 		if(pacman.sprite.getGlobalBounds().intersects(invincibleBalls.at(i).getGlobalBounds())){
-			ghostsWeak = true;
 			for(size_t i = 0; i < ghosts.size(); i++){
 				ghosts.at(i).setWeak();
 			}
@@ -188,15 +203,13 @@ void Map::run(){
 	//ghosts
 	for(size_t i = 0; i < ghosts.size(); i++){
 		if(pacman.sprite.getGlobalBounds().intersects(ghosts.at(i).sprite.getGlobalBounds())){
-			if(ghostsWeak){
-				//ghost invincible = already killed
-				if(ghosts.at(i).weak() || ghosts.at(i).endWeak()){
-					//kill ghost
-					ghostsEaten++;
-					information.addScore(100 * pow(2,ghostsEaten));
-					ghosts.at(i).setDead();				
-				}
-			}else{
+			//ghost invincible = already killed
+			if(ghosts.at(i).weak() || ghosts.at(i).endWeak()){
+				//kill ghost
+				ghostsEaten++;
+				information.addScore(100 * pow(2,ghostsEaten));
+				ghosts.at(i).setDead();
+			}else if(ghosts.at(i).normal()){
 				pacman.dying = true;
 				//lose life
 				if(information.getLife() == 0){

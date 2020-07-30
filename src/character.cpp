@@ -66,7 +66,7 @@ int Character::checkMazeCollisions(int maze[30][27], int x, int y, int width, in
 	if((cell1.x < 0) || (cell1.y < 0) || (cell1.x > 26) || (cell1.y > 29)){
 		return 1; //collision
 	}
-	if ((maze[cell1.y][cell1.x] != 0) || (maze[cell2.y][cell2.x] != 0) || ((maze[cell3.y][cell3.x] != 0) && needCell3)){		
+	if (maze[cell1.y][cell1.x] == 1 || maze[cell2.y][cell2.x] == 1 || (maze[cell3.y][cell3.x] == 1 && needCell3)){
 		if (direction == Up){
 			distanceFrontalWall = y_character - cell1.y * cellSize - cellSize;
 		}else if (direction == Down){
@@ -79,11 +79,7 @@ int Character::checkMazeCollisions(int maze[30][27], int x, int y, int width, in
 		//si on est en dessous ou egal a la marge de collision avec un mur alors il y a une collision
 		if ((distanceFrontalWall <= MARGIN_COLLISION_MAX) && 
 			(distanceFrontalWall >= MARGIN_COLLISION_MIN)){
-			if (maze[cell1.y][cell1.x] == 3 || maze[cell2.y][cell2.x] == 3){
-				return 2; //end of maze
-			}else{
-				return 1; //collision
-			}
+			return 1;
 		}else{
 			return 0;
 		}
@@ -98,7 +94,13 @@ int Character::checkMazeCollisions(int maze[30][27], int x, int y, int width, in
 		}
 		if((distanceSideWall1 >= MARGIN_COLLISION_MIN) &&
 			(distanceSideWall2 >= MARGIN_COLLISION_MIN)){
-			return 0;
+			if (maze[cell1.y][cell1.x] == 3 || maze[cell2.y][cell2.x] == 3){
+				return 2;
+			}else if(maze[cell1.y][cell1.x] == 2 && maze[cell2.y][cell2.x] == 2){
+				return 3; //ghost cage
+			}else{
+				return 0;
+			}
 		}else{
 			return 1;
 		}

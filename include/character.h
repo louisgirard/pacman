@@ -24,11 +24,11 @@ public:
 	int cellY(int maze_y, int maze_height);
 
 	sf::Sprite sprite;
+	Direction direction;
 	bool stop;
 
 protected:
 	int cellAnimation;
-	Direction direction;
 
 	int speed;
 	int sprite_x;

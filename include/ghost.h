@@ -19,6 +19,7 @@ class Ghost : public Character
 {
 public:
 	Ghost(int ghost_id); //id of ghost, 1 = red ghost, 2 = pink ghost, etc..
+	sf::Clock timer;
 
 	void input();
 	void move(int maze[30][27], int maze_x, int maze_y, int maze_width, int maze_height);

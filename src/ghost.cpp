@@ -1,6 +1,6 @@
 #include "ghost.h"
 
-Ghost::Ghost(int ghost_id):Character(GHOST_X + ghost_id * 5 * GHOST_SIZE,GHOST_Y,GHOST_SIZE,GHOST_SPACE){
+Ghost::Ghost(int ghost_id):Character(GHOST_X + ghost_id * 2 * (GHOST_SIZE + GHOST_SPACE),GHOST_Y,GHOST_SIZE,GHOST_SPACE){
 	state = 0;
 	id = ghost_id;
 	direction = Down;
@@ -14,7 +14,6 @@ void Ghost::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int m
 		if (next_direction != Null){
 			direction = next_direction;
 			collision = checkMazeCollisions(maze,maze_x,maze_y,maze_width,maze_height);
-			std::cout << "next direction = " << next_direction << ", collision = " << collision << std::endl;
 			if (collision == 0 || collision == 3){ //if no collision when changing direction
 				next_direction = Null;
 			}else{
@@ -41,8 +40,6 @@ void Ghost::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int m
 			}else{
 				sprite.move(GHOST_SIZE - maze_width + 11, 0);
 			}
-		}else{
-			std::cout << "collision" << std::endl;
 		}
 	}
 }
@@ -50,7 +47,7 @@ void Ghost::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int m
 void Ghost::animationMove(Direction direction){
 	//normal pose
 	if(normal()){
-		sprite.setTextureRect(sf::IntRect(GHOST_X + id * 5 * GHOST_SIZE + cellAnimation * (GHOST_SIZE + GHOST_SPACE),GHOST_Y + direction * (GHOST_SIZE + GHOST_SPACE),GHOST_SIZE,GHOST_SIZE));
+		sprite.setTextureRect(sf::IntRect(GHOST_X + id * 2 * (GHOST_SIZE + GHOST_SPACE) + cellAnimation * (GHOST_SIZE + GHOST_SPACE),GHOST_Y + direction * (GHOST_SIZE + GHOST_SPACE),GHOST_SIZE,GHOST_SIZE));
 		cellAnimation = (cellAnimation + 1) % 2;
 	}else if(weak()){
 		sprite.setTextureRect(sf::IntRect(GHOST_WEAK_X + (GHOST_SIZE + GHOST_SPACE) * cellAnimation, GHOST_WEAK_Y,GHOST_SIZE,GHOST_SIZE));

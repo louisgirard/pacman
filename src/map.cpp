@@ -45,7 +45,7 @@ void Map::setSprites(){
 	//ghosts
 	for(int i = 0; i < GHOST_NUMBER; i++){
 		Ghost ghost(i);
-		ghost.setSprite(texture, GHOST_MAZE_X, GHOST_MAZE_Y);
+		ghost.setSprite(texture, GHOST_MAZE_X + i * 26, GHOST_MAZE_Y);
 		ghosts.push_back(ghost);
 	}
 
@@ -128,10 +128,9 @@ void Map::run(){
 		pacman.move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
 		pacmanTimer.restart();
 	}
-	bool ghost_restart = false;
-	for(int i = 0; i < ghosts.size(); i++){
+	for(size_t i = 0; i < ghosts.size(); i++){
 		if(ghosts.at(i).weak() || ghosts.at(i).endWeak()){
-			if (ghostsTimer.getElapsedTime().asMilliseconds() >= (NORMAL_SPEED * 2)){
+			if (ghosts.at(i).timer.getElapsedTime().asMilliseconds() >= (NORMAL_SPEED * 2)){
 				Direction direction;
 				int dir = rand() % 4 + 1;
 				direction = static_cast<Direction>(dir);
@@ -139,10 +138,10 @@ void Map::run(){
 				ghosts.at(i).next_direction = direction;
 				ghosts.at(i).move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
 
-				ghost_restart = true;
+				ghosts.at(i).timer.restart();
 			}
 		}else if(ghosts.at(i).dead()){
-			if (ghostsTimer.getElapsedTime().asMilliseconds() >= (NORMAL_SPEED * 2)){
+			if (ghosts.at(i).timer.getElapsedTime().asMilliseconds() >= (NORMAL_SPEED * 2)){
 				int ghost_x = ghosts.at(i).cellX(MAZE_X, MAZE_WIDTH);
 				int ghost_y = ghosts.at(i).cellY(MAZE_Y, MAZE_HEIGHT);
 				ghosts.at(i).next_direction = astar.shortestPathDirection(maze.graph, ghost_x, ghost_y, 12, 13);
@@ -152,10 +151,10 @@ void Map::run(){
 				}
 				ghosts.at(i).move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
 				
-				ghost_restart = true;
+				ghosts.at(i).timer.restart();
 			}
 		}else{ //normal
-			if (ghostsTimer.getElapsedTime().asMilliseconds() >= NORMAL_SPEED){
+			if (ghosts.at(i).timer.getElapsedTime().asMilliseconds() >= NORMAL_SPEED){
 				int ghost_x = ghosts.at(i).cellX(MAZE_X, MAZE_WIDTH);
 				int ghost_y = ghosts.at(i).cellY(MAZE_Y, MAZE_HEIGHT);
 				int pacman_x = pacman.cellX(MAZE_X, MAZE_WIDTH);
@@ -163,12 +162,9 @@ void Map::run(){
 				ghosts.at(i).next_direction = astar.shortestPathDirection(maze.graph, ghost_x, ghost_y, pacman_x, pacman_y);
 				ghosts.at(i).move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
 
-				ghost_restart = true;
+				ghosts.at(i).timer.restart();
 			}
 		}
-	}
-	if(ghost_restart){
-		ghostsTimer.restart();
 	}
 	//invincible
 	for(int i = 0; i < ghosts.size(); i++){
@@ -234,9 +230,9 @@ void Map::start(){
 	started = true;
 	pacman.stop = false;
 	pacmanTimer.restart();
-	ghostsTimer.restart();
 	for(int i = 0; i < ghosts.size(); i++){
 		ghosts.at(i).stop = false;
+		ghosts.at(i).timer.restart();
 	}
 }
 

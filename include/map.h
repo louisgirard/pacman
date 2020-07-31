@@ -20,7 +20,7 @@
 #define PACMAN_MAZE_X (MAZE_X + (MAZE_WIDTH - PACMAN_SIZE) / 2)
 #define PACMAN_MAZE_Y 212
 #define GHOST_MAZE_X PACMAN_MAZE_X - 14
-#define GHOST_MAZE_Y 136
+#define GHOST_MAZE_Y 138
 
 #define INVINCIBLE_BALL_X 1
 #define INVINCIBLE_BALL_Y 181
@@ -38,7 +38,7 @@
 #define READY_MAZE_X (MAZE_X + (MAZE_WIDTH - READY_WIDTH) / 2)
 #define READY_MAZE_Y 167
 
-#define GHOST_NUMBER 1
+#define GHOST_NUMBER 2
 
 #define NORMAL_SPEED 30
 
@@ -59,7 +59,6 @@ private:
 	sf::RenderWindow &window;
 	sf::Texture &texture;
 	sf::Clock pacmanTimer;
-	sf::Clock ghostsTimer;
 	sf::Clock invincibleTimer;
 	Astar astar;
 

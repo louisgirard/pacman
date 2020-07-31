@@ -84,6 +84,7 @@ int Character::checkMazeCollisions(int maze[30][27], int x, int y, int width, in
 			return 0;
 		}
 	}else{
+		std::cout << x_character << std::endl;
 		//if it can pass, need to be in the middle of a cell
 		if ((direction == Up) || (direction == Down)){
 			distanceSideWall1 = x_character - cell1.x * cellSize;

@@ -45,7 +45,7 @@ void Map::setSprites(){
 	//ghosts
 	for(int i = 0; i < GHOST_NUMBER; i++){
 		Ghost ghost(i);
-		ghost.setSprite(texture, MAZE_X + 1, MAZE_Y + 1);
+		ghost.setSprite(texture, GHOST_MAZE_X, GHOST_MAZE_Y);
 		ghosts.push_back(ghost);
 	}
 
@@ -186,7 +186,9 @@ void Map::run(){
 	for(size_t i = 0; i < invincibleBalls.size(); i++){
 		if(pacman.sprite.getGlobalBounds().intersects(invincibleBalls.at(i).getGlobalBounds())){
 			for(size_t i = 0; i < ghosts.size(); i++){
-				ghosts.at(i).setWeak();
+				if(!ghosts.at(i).dead()){
+					ghosts.at(i).setWeak();
+				}
 			}
 			invincibleTimer.restart();
 			information.addScore(50);

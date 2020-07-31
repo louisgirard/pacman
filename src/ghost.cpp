@@ -14,6 +14,7 @@ void Ghost::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int m
 		if (next_direction != Null){
 			direction = next_direction;
 			collision = checkMazeCollisions(maze,maze_x,maze_y,maze_width,maze_height);
+			std::cout << "next direction = " << next_direction << ", collision = " << collision << std::endl;
 			if (collision == 0 || collision == 3){ //if no collision when changing direction
 				next_direction = Null;
 			}else{

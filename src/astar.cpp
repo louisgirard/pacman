@@ -51,7 +51,6 @@ std::vector<Direction> Astar::shortestPath(std::vector<std::vector<Node>> &graph
 		}
 		closedList.push_back(current);
 	}
-	std::cout << "End ASTAR, ERROR" << std::endl;
 	return {};
 }
 

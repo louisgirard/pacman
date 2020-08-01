@@ -93,6 +93,9 @@ void Map::setLittleBalls(){
 					if(sprite.getGlobalBounds().intersects(ready.getGlobalBounds())){
 						intersect = true;
 					}
+					if(i == 13 && (j == 11 || j == 12 || j == 13 || j == 14)){
+						intersect = true;
+					}
 					if (!intersect){
 						litteBalls.push_back(sprite);
 					}

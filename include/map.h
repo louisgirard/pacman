@@ -78,6 +78,7 @@ private:
 	void setInvincibleBalls();
 	void setLittleBalls();
 	void reset();
+	void restart();
 
 };
 #endif

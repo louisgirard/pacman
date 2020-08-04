@@ -8,6 +8,9 @@ Ghost::Ghost(int ghost_id):Character(GHOST_X + ghost_id * 2 * (GHOST_SIZE + GHOS
 }
 
 void Ghost::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int maze_height){
+	if(start_timer.getElapsedTime().asSeconds() < START_DELAY * id){
+		return;
+	}
 	Direction oldDirection = direction;
 	int collision;
 	if(!stop){

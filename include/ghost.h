@@ -15,11 +15,14 @@
 #define GHOST_SIZE 14
 #define GHOST_SPACE 6 //space between ghost sprites in sprite "pacman-sprites"
 
+#define START_DELAY 3
+
 class Ghost : public Character
 {
 public:
 	Ghost(int ghost_id); //id of ghost, 1 = red ghost, 2 = pink ghost, etc..
 	sf::Clock timer;
+	sf::Clock start_timer;
 
 	void input();
 	void move(int maze[30][27], int maze_x, int maze_y, int maze_width, int maze_height);

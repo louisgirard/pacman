@@ -118,9 +118,11 @@ void Map::run(){
 	if(pacman.dying){
 		if (pacmanTimer.getElapsedTime().asMilliseconds() >= 100){
 			if(pacman.animationDeath()){// animation end
-				pacman.sprite.setPosition(PACMAN_MAZE_X, PACMAN_MAZE_Y);
-				started = false;
-				startTimer.restart();
+				if(information.getLife() < 0){
+					reset();
+				}else{
+					restart();
+				}
 			}
 			pacmanTimer.restart();
 		}
@@ -189,6 +191,7 @@ void Map::run(){
 					ghosts.at(i).setWeak();
 				}
 			}
+			ghostsEaten = 0;
 			invincibleTimer.restart();
 			information.addScore(50);
 			invincibleBalls.erase(invincibleBalls.begin() + i);
@@ -213,19 +216,17 @@ void Map::run(){
 			}else if(ghosts.at(i).normal()){
 				pacman.dying = true;
 				//lose life
-				if(information.getLife() == 0){
-					reset();
-				}else{
-					information.loseLife();
-				}
+				information.loseLife();
 			}
 		}
 	}
 	//check victory
 	if(litteBalls.size() == 0 && invincibleBalls.size() == 0){
-		reset();
-		started = false;
-		std::cout << "Victory!!!" << std::endl;
+		restart();
+		invincibleBalls.clear();
+		litteBalls.clear();
+		setInvincibleBalls();
+		setLittleBalls();
 	}
 }
 
@@ -236,16 +237,31 @@ void Map::start(){
 	for(int i = 0; i < ghosts.size(); i++){
 		ghosts.at(i).stop = false;
 		ghosts.at(i).timer.restart();
+		ghosts.at(i).start_timer.restart();
 	}
 }
 
 void Map::reset(){
-	pacman.sprite.setPosition(PACMAN_MAZE_X, PACMAN_MAZE_Y);
+	restart();
 	information.clearScore();
+	information.gainLife();
 	information.gainLife();
 	information.gainLife();
 	invincibleBalls.clear();
 	litteBalls.clear();
 	setInvincibleBalls();
 	setLittleBalls();
+}
+
+void Map::restart(){
+	started = false;
+	startTimer.restart();
+	pacman.sprite.setPosition(PACMAN_MAZE_X, PACMAN_MAZE_Y);
+	pacmanTimer.restart();
+	for(int i = 0; i < ghosts.size(); i++){
+		ghosts.at(i).direction = Down;
+		ghosts.at(i).sprite.setPosition(GHOST_MAZE_X + i * 26, GHOST_MAZE_Y);
+		ghosts.at(i).timer.restart();
+		ghosts.at(i).start_timer.restart();
+	}	
 }

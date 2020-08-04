@@ -10,8 +10,10 @@ void Information::gainLife(){
 	lives++;
 }
 void Information::loseLife(){
-	if (lives != 0)
-		lives--;
+	lives--;
+}
+void Information::fullLife(){
+	lives = 2;
 }
 int Information::getLife(){
 	return lives;
@@ -19,6 +21,9 @@ int Information::getLife(){
 //score
 void Information::addScore(int sc){
 	score += sc;
+	if(score > highScore){
+		highScore = score;
+	}
 }
 void Information::clearScore(){
 	score = 0;

@@ -13,6 +13,7 @@ public:
 	void gainLife();
 	void loseLife();
 	int getLife();
+	void fullLife();
 	//score
 	void addScore(int sc);
 	void clearScore();

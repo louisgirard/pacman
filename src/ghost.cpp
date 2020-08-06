@@ -67,6 +67,22 @@ void Ghost::animationMove(Direction direction){
 	}
 }
 
+bool Ghost::inCage(int maze_x, int maze_y){
+	int ghost_x = sprite.getPosition().x - maze_x;
+	int ghost_y = sprite.getPosition().y - maze_y;
+	int cage_x = 84;
+	int cage_y = 100;
+	int cage_width = 48;
+	int cage_height = 24;
+
+	if(ghost_x >= cage_x && ghost_y >= cage_y && ghost_x <= (cage_x + cage_width) && ghost_y <= (cage_y + cage_height)){
+		std::cout << "In cage !" << std::endl;
+		return true;
+	}else{
+		return false;
+	}
+}
+
 void Ghost::setNormal(){
 	state = 0;
 	speed = 2;

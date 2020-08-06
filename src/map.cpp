@@ -68,7 +68,7 @@ void Map::setInvincibleBalls(){
 
 void Map::setLittleBalls(){
 	sf::Sprite sprite;
-	int x,y;	
+	int x,y;
 	int cellSize = MAZE_WIDTH / 27;
 	int offset = 7;
 	bool intersect = false; //intersect with other sprites
@@ -151,7 +151,7 @@ void Map::run(){
 				int ghost_y = ghosts.at(i).cellY(MAZE_Y, MAZE_HEIGHT);
 				ghosts.at(i).next_direction = astar.shortestPathDirection(maze.graph, ghost_x, ghost_y, 12, 13);
 				//if ghost arrived in ghosts cage
-				if(ghosts.at(i).next_direction == Null){
+				if(ghosts.at(i).inCage(MAZE_X, MAZE_Y)){
 					ghosts.at(i).setNormal();
 				}
 				ghosts.at(i).move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
@@ -187,7 +187,7 @@ void Map::run(){
 	for(size_t i = 0; i < invincibleBalls.size(); i++){
 		if(pacman.sprite.getGlobalBounds().intersects(invincibleBalls.at(i).getGlobalBounds())){
 			for(size_t i = 0; i < ghosts.size(); i++){
-				if(!ghosts.at(i).dead()){
+				if(!ghosts.at(i).dead() && !ghosts.at(i).inCage(MAZE_X, MAZE_Y)){
 					ghosts.at(i).setWeak();
 				}
 			}
@@ -261,6 +261,8 @@ void Map::restart(){
 	for(int i = 0; i < ghosts.size(); i++){
 		ghosts.at(i).direction = Down;
 		ghosts.at(i).sprite.setPosition(GHOST_MAZE_X + i * 26, GHOST_MAZE_Y);
+		ghosts.at(i).setNormal();
+		ghosts.at(i).animationMove(Down);
 		ghosts.at(i).timer.restart();
 		ghosts.at(i).start_timer.restart();
 	}	

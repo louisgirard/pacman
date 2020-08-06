@@ -29,6 +29,8 @@ public:
 	void animationMove(Direction direction);
 	Direction next_direction;
 
+	bool inCage(int maze_x, int maze_y);
+
 	void setNormal();
 	void setWeak();
 	void setEndWeak();

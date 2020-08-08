@@ -30,6 +30,7 @@ int main()
 	/*Clock*/
 	sf::Clock time;
 
+	std::srand(std::time(nullptr));
     /*Window*/
 	while(window.isOpen()){
 		/*Pour fermer la fenetre si on appuie sur la croix rouge*/

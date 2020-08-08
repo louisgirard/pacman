@@ -106,7 +106,6 @@ void Map::setLittleBalls(){
 }
 
 void Map::run(){
-	std::srand(std::time(nullptr));
 	if (!started){
 		if(startTimer.getElapsedTime().asMilliseconds() >= 2000){
 			start();
@@ -136,11 +135,16 @@ void Map::run(){
 	for(size_t i = 0; i < ghosts.size(); i++){
 		if(ghosts.at(i).weak() || ghosts.at(i).endWeak()){
 			if (ghosts.at(i).timer.getElapsedTime().asMilliseconds() >= (NORMAL_SPEED * 2)){
-				Direction direction;
-				int dir = rand() % 4 + 1;
-				direction = static_cast<Direction>(dir);
-				//std::cout << "direction = " << direction << std::endl;
-				ghosts.at(i).next_direction = direction;
+				/*Direction direction;
+				do{
+					int dir = rand() % 4 + 1;
+					direction = static_cast<Direction>(dir);
+
+				}while((direction == Left && ghosts.at(i).direction == Right) || (direction == Right && ghosts.at(i).direction == Left) ||
+					(direction == Up && ghosts.at(i).direction == Down) || (direction == Down && ghosts.at(i).direction == Up));
+
+
+				ghosts.at(i).next_direction = direction;*/
 				ghosts.at(i).move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
 
 				ghosts.at(i).timer.restart();

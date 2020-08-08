@@ -37,11 +37,30 @@ void Ghost::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int m
 				sprite.move(speed, 0);
 			}
 		}else if(collision == 2){
+			std::cout << "teleport ghost" << std::endl;
 			//end of maze, teleport ghost
 			if (direction == Left){
 				sprite.move(maze_width - GHOST_SIZE - 11, 0);
 			}else{
 				sprite.move(GHOST_SIZE - maze_width + 11, 0);
+			}
+		}else{
+			//collision
+			//random direction when weak
+			if(weak() || endWeak()){				
+				Direction new_direction;
+				do{
+					do{
+						int dir = rand() % 4;
+						new_direction = static_cast<Direction>(dir);					
+					}while((new_direction == Left && direction == Right) || (new_direction == Right && direction == Left) ||
+						(new_direction == Up && direction == Down) || (new_direction == Down && direction == Up));
+					oldDirection = direction;
+					direction = new_direction;
+					collision = checkMazeCollisions(maze,maze_x,maze_y,maze_width,maze_height);
+					direction = oldDirection;
+				}while(collision == 1);
+				next_direction = new_direction;
 			}
 		}
 	}
@@ -76,7 +95,6 @@ bool Ghost::inCage(int maze_x, int maze_y){
 	int cage_height = 24;
 
 	if(ghost_x >= cage_x && ghost_y >= cage_y && ghost_x <= (cage_x + cage_width) && ghost_y <= (cage_y + cage_height)){
-		std::cout << "In cage !" << std::endl;
 		return true;
 	}else{
 		return false;

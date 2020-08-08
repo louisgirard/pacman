@@ -1,4 +1,5 @@
 #include<SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include "title_screen.h"
 #include "map.h"
@@ -30,6 +31,11 @@ int main()
 	/*Clock*/
 	sf::Clock time;
 
+	/*Start Sound*/
+	sf::Sound start_sound;
+	sf::SoundBuffer start_buffer;
+	start_buffer.loadFromFile("sounds/pacman_beginning.wav");
+
 	std::srand(std::time(nullptr));
     /*Window*/
 	while(window.isOpen()){
@@ -50,6 +56,8 @@ int main()
 			if(title.inputKey()){ //si on a appuye sur la touche pour sortir de l'ecran titre
 				on_title = false;
 				map.startTimer.restart();
+				start_sound.setBuffer(start_buffer);
+				start_sound.play();
 			}
 		}else{
 			map.displayBackground();

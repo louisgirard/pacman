@@ -2,6 +2,7 @@
 #define MAP
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <vector>
 #include <iostream>
 #include <cmath>
@@ -54,8 +55,13 @@ public:
 	void start();
 	bool started = false;
 	sf::Clock startTimer;
+
+	int start_timer_duration = 5000;
 	
 private:
+	sf::Sound sound;
+	sf::SoundBuffer sound_buffer;
+
 	sf::RenderWindow &window;
 	sf::Texture &texture;
 	sf::Clock pacmanTimer;

@@ -2,6 +2,7 @@
 #define PACMAN
 
 #include "character.h"
+#include <SFML/Audio.hpp>
 
 #define PACMAN_X 43
 #define PACMAN_Y 3
@@ -21,8 +22,13 @@ public:
 	void animationMove(Direction direction);
 	bool animationDeath();
 
+	sf::Sound sound;
+	sf::SoundBuffer sound_buffer;
+	int sound_interval = 0;
+
 	int cellAnimationDeath;
 	bool dying;
 	Direction keyInput; //hold last input key to turn pacman according to it
+
 };
 #endif

@@ -107,7 +107,7 @@ void Map::setLittleBalls(){
 
 void Map::run(){
 	if (!started){
-		if(startTimer.getElapsedTime().asMilliseconds() >= 2000){
+		if(startTimer.getElapsedTime().asMilliseconds() >= start_timer_duration){
 			start();
 			startTimer.restart();
 		}
@@ -135,16 +135,6 @@ void Map::run(){
 	for(size_t i = 0; i < ghosts.size(); i++){
 		if(ghosts.at(i).weak() || ghosts.at(i).endWeak()){
 			if (ghosts.at(i).timer.getElapsedTime().asMilliseconds() >= (NORMAL_SPEED * 2)){
-				/*Direction direction;
-				do{
-					int dir = rand() % 4 + 1;
-					direction = static_cast<Direction>(dir);
-
-				}while((direction == Left && ghosts.at(i).direction == Right) || (direction == Right && ghosts.at(i).direction == Left) ||
-					(direction == Up && ghosts.at(i).direction == Down) || (direction == Down && ghosts.at(i).direction == Up));
-
-
-				ghosts.at(i).next_direction = direction;*/
 				ghosts.at(i).move(maze.info, MAZE_X, MAZE_Y, MAZE_WIDTH, MAZE_HEIGHT);
 
 				ghosts.at(i).timer.restart();
@@ -214,11 +204,18 @@ void Map::run(){
 			//ghost invincible = already killed
 			if(ghosts.at(i).weak() || ghosts.at(i).endWeak()){
 				//kill ghost
+				sound_buffer.loadFromFile("sounds/pacman_eatghost.wav");
+				sound.setBuffer(sound_buffer);
+				sound.play();
 				ghostsEaten++;
 				information.addScore(100 * pow(2,ghostsEaten));
 				ghosts.at(i).setDead();
 			}else if(ghosts.at(i).normal()){
+				sound_buffer.loadFromFile("sounds/pacman_death.wav");
+				sound.setBuffer(sound_buffer);
+				sound.play();
 				pacman.dying = true;
+				pacman.sound.stop();
 				//lose life
 				information.loseLife();
 			}
@@ -226,6 +223,7 @@ void Map::run(){
 	}
 	//check victory
 	if(litteBalls.size() == 0 && invincibleBalls.size() == 0){
+		pacman.sound.stop();
 		restart();
 		invincibleBalls.clear();
 		litteBalls.clear();
@@ -235,6 +233,7 @@ void Map::run(){
 }
 
 void Map::start(){
+	start_timer_duration = 1500;
 	started = true;
 	pacman.stop = false;
 	pacmanTimer.restart();

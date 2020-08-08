@@ -1,6 +1,8 @@
 #include "pacman.h"
 
 Pacman::Pacman():Character(PACMAN_X,PACMAN_Y,PACMAN_SIZE,PACMAN_SPACE),keyInput{Null},cellAnimationDeath{0},dying{false}{
+	sound_buffer.loadFromFile("sounds/pacman_chomp.wav");
+	sound.setBuffer(sound_buffer);
 }
 
 void Pacman::input(){
@@ -32,6 +34,10 @@ void Pacman::move(int maze[30][27], int maze_x, int maze_y, int maze_width, int 
 		collision = checkMazeCollisions(maze,maze_x,maze_y,maze_width,maze_height);
 		//follow same direction if no collision
 		if (collision == 0){
+			if(sound_interval == 0){
+				sound.play();
+			}
+			sound_interval = (sound_interval + 1) % 11;
 			animationMove(direction);
 			if (direction == Up){
 				sprite.move(0, -speed);

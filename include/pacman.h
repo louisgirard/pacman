@@ -22,10 +22,6 @@ public:
 	void animationMove(Direction direction);
 	bool animationDeath();
 
-	sf::Sound sound;
-	sf::SoundBuffer sound_buffer;
-	int sound_interval = 0;
-
 	int cellAnimationDeath;
 	bool dying;
 	Direction keyInput; //hold last input key to turn pacman according to it

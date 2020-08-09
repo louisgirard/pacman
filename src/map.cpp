@@ -2,6 +2,9 @@
 
 Map::Map(sf::Texture &texture_background, sf::Texture &texture_sprites, sf::RenderWindow &main_window):window{main_window},texture{texture_sprites},maze{texture_background}{
 	setSprites();
+	ghost_buffer.loadFromFile("sounds/ghost.wav");
+	ghost_sound.setBuffer(ghost_buffer);
+	ghost_sound.setLoop(true);
 }
 
 void Map::displayBackground(){
@@ -194,6 +197,11 @@ void Map::run(){
 	//littleBalls
 	for(size_t i = 0; i < litteBalls.size(); i++){
 		if(pacman.sprite.getGlobalBounds().intersects(litteBalls.at(i).getGlobalBounds())){
+			if(sound.getStatus() != sf::SoundSource::Status::Playing){
+				sound_buffer.loadFromFile("sounds/pacman_eat.wav");
+				sound.setBuffer(sound_buffer);
+				sound.play();
+			}
 			information.addScore(10);
 			litteBalls.erase(litteBalls.begin() + i);
 		}
@@ -211,11 +219,11 @@ void Map::run(){
 				information.addScore(100 * pow(2,ghostsEaten));
 				ghosts.at(i).setDead();
 			}else if(ghosts.at(i).normal()){
+				ghost_sound.stop();
 				sound_buffer.loadFromFile("sounds/pacman_death.wav");
 				sound.setBuffer(sound_buffer);
 				sound.play();
 				pacman.dying = true;
-				pacman.sound.stop();
 				//lose life
 				information.loseLife();
 			}
@@ -223,7 +231,7 @@ void Map::run(){
 	}
 	//check victory
 	if(litteBalls.size() == 0 && invincibleBalls.size() == 0){
-		pacman.sound.stop();
+		ghost_sound.stop();
 		restart();
 		invincibleBalls.clear();
 		litteBalls.clear();
@@ -242,6 +250,7 @@ void Map::start(){
 		ghosts.at(i).timer.restart();
 		ghosts.at(i).start_timer.restart();
 	}
+	ghost_sound.play();
 }
 
 void Map::reset(){

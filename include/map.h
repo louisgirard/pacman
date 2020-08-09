@@ -41,7 +41,7 @@
 
 #define GHOST_NUMBER 2
 
-#define NORMAL_SPEED 30
+#define NORMAL_SPEED 35
 
 class Map
 {
@@ -60,6 +60,8 @@ public:
 	
 private:
 	sf::Sound sound;
+	sf::Sound ghost_sound;
+	sf::SoundBuffer ghost_buffer;
 	sf::SoundBuffer sound_buffer;
 
 	sf::RenderWindow &window;
